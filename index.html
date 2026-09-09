@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta name="theme-color" content="#120b06">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Potato Clicker V8">
+
+<title>Potato Clicker V8 🥔</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+    margin: 0;
+    min-height: 100%;
+    font-family: Arial, sans-serif;
+    background:
+        radial-gradient(circle at top, #5a3515, #1b0e07 55%, #090504);
+    color: white;
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+button {
+    font: inherit;
+    border: 0;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.app {
+    width: min(100%, 700px);
+    margin: auto;
+    padding: 18px 14px 35px;
+    text-align: center;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.title {
+    text-align: left;
+}
+
+.title h1 {
+    margin: 0;
+    font-size: clamp(25px, 7vw, 38px);
+}
+
+.version {
+    color: #d7a66a;
+    font-size: 13px;
+    margin-top: 3px;
+}
+
+.iconBtn {
+    width: 45px;
+    height: 45px;
+    border-radius: 14px;
+    background: #352014;
+    color: white;
+    font-size: 20px;
+    box-shadow: 0 5px 0 #170b06;
+}
+
+.counter {
+    margin-top: 20px;
+    font-size: clamp(34px, 10vw, 55px);
+    font-weight: 900;
+    text-shadow: 0 4px 15px #000;
+}
+
+.counterLabel {
+    color: #caa47c;
+    font-size: 14px;
+}
+
+.power {
+    margin-top: 8px;
+    color: #ffd27d;
+    font-weight: bold;
+}
+
+/* COMBO */
+
+.comboBox {
+    margin: 17px auto 10px;
+    max-width: 450px;
+}
+
+.comboTop {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #dcb993;
+}
+
+.comboBar {
+    height: 10px;
+    background: #2b180d;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.comboFill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ff9f1c, #ffe066);
+    transition: width .12s linear;
+}
+
+/* POTATO */
+
+.potatoArea {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 15px auto;
+    min-height: 300px;
+}
+
+.potatoButton {
+    width: min(72vw, 330px);
+    height: min(72vw, 300px);
+    min-width: 240px;
+    min-height: 220px;
+
+    background: transparent;
+    padding: 0;
+
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+
+    filter: drop-shadow(0 25px 20px rgba(0,0,0,.5));
+
+    transition: transform .08s ease;
+}
+
+.potatoButton:active {
+    transform: scale(.91) rotate(-2deg);
+}
+
+.potatoSVG {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.potatoBody {
+    fill: url(#potatoGradient);
+    stroke: #6e3514;
+    stroke-width: 7;
+}
+
+.hole {
+    fill: #6e3514;
+    opacity: .65;
+}
+
+.highlight {
+    fill: #ffd38a;
+    opacity: .32;
+}
+
+.eye {
+    fill: #241008;
+}
+
+.mouth {
+    fill: #241008;
+}
+
+/* FLOATING TEXT */
+
+.floatText {
+    position: fixed;
+    pointer-events: none;
+    z-index: 100;
+    font-size: 24px;
+    font-weight: 900;
+    color: #ffe082;
+    text-shadow: 0 3px 7px black;
+    animation: floatUp .8s ease forwards;
+}
+
+.critText {
+    color: #ff7043;
+    font-size: 30px;
+}
+
+@keyframes floatUp {
+    from {
+        transform: translate(-50%, 0) scale(.7);
+        opacity: 1;
+    }
+
+    to {
+        transform: translate(-50%, -80px) scale(1.2);
+        opacity: 0;
+    }
+}
+
+.hit {
+    animation: potatoHit .13s ease;
+}
+
+@keyframes potatoHit {
+    50% {
+        transform: scale(.88) rotate(3deg);
+    }
+}
+
+/* PARTICLES */
+
+.particle {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background: #d99543;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 90;
+    animation: particle .65s ease-out forwards;
+}
+
+@keyframes particle {
+    to {
+        transform: translate(var(--x), var(--y)) scale(0);
+        opacity: 0;
+    }
+}
+
+/* MENU */
+
+.menu {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
+    margin-top: 12px;
+}
+
+.menu button {
+    min-height: 58px;
+    border-radius: 15px;
+    background: linear-gradient(#4b2b17, #29150c);
+    color: white;
+    box-shadow: 0 4px 0 #130904;
+    font-weight: bold;
+}
+
+.menu button:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #130904;
+}
+
+/* MODAL */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.78);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    z-index: 200;
+}
+
+.modal.open {
+    display: flex;
+}
+
+.panel {
+    width: min(100%, 570px);
+    max-height: 88vh;
+    overflow-y: auto;
+    background:
+        linear-gradient(145deg, #382014, #170c07);
+    border: 2px solid #704321;
+    border-radius: 22px;
+    padding: 20px;
+    box-shadow: 0 20px 70px #000;
+}
+
+.panel h2 {
+    margin-top: 0;
+}
+
+.close {
+    float: right;
+    background: #5a251b;
+    color: white;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    font-size: 18px;
+}
+
+/* SHOP */
+
+.upgrade {
+    width: 100%;
+    text-align: left;
+    padding: 15px;
+    margin: 7px 0;
+    border-radius: 15px;
+    background: #29150c;
+    color: white;
+    border: 1px solid #59341c;
+}
+
+.upgrade:disabled {
+    opacity: .45;
+}
+
+.upName {
+    font-weight: 900;
+}
+
+.upDesc {
+    color: #c6a989;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.upPrice {
+    color: #ffd166;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+/* SKINS */
+
+.skinGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.skin {
+    padding: 14px 8px;
+    background: #29150c;
+    border: 2px solid transparent;
+    border-radius: 16px;
+    color: white;
+}
+
+.skin.selected {
+    border-color: #ffc857;
+}
+
+.skinPreview {
+    width: 80px;
+    height: 65px;
+    border-radius: 50%;
+    margin: 0 auto 8px;
+}
+
+.classic {
+    background: linear-gradient(145deg, #d89548, #8c461b);
+}
+
+.gold {
+    background: linear-gradient(145deg, #fff0a0, #d69b19);
+}
+
+.diamond {
+    background: linear-gradient(145deg, #d9ffff, #48b9df);
+}
+
+.lava {
+    background: linear-gradient(145deg, #ffbd35, #d52b1e);
+}
+
+.galaxy {
+    background: linear-gradient(145deg, #8b5cf6, #15104b);
+}
+
+.cosmic {
+    background: linear-gradient(145deg, #ff66cc, #6b21a8, #17105c);
+}
+
+/* MINIGAMES */
+
+.gameCard {
+    background: #29150c;
+    border: 1px solid #60391f;
+    border-radius: 18px;
+    padding: 16px;
+    margin: 10px 0;
+}
+
+.gameCard h3 {
+    margin: 5px 0;
+}
+
+.gameCard p {
+    color: #cdb292;
+    font-size: 13px;
+}
+
+.gameButton {
+    width: 100%;
+    padding: 15px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #e59b3a, #9b4d19);
+    color: white;
+    font-weight: 900;
+}
+
+/* QUICK GAME */
+
+.quickArea {
+    height: 220px;
+    position: relative;
+    background: #140a06;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.target {
+    position: absolute;
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    background: #ffb703;
+    box-shadow: 0 0 25px #ff9800;
+    display: none;
+}
+
+/* ACHIEVEMENTS */
+
+.achievement {
+    padding: 12px;
+    background: #29150c;
+    border-radius: 14px;
+    margin: 7px 0;
+    text-align: left;
+    opacity: .45;
+}
+
+.achievement.done {
+    opacity: 1;
+    border: 1px solid #d99b42;
+}
+
+.achievement strong {
+    display: block;
+}
+
+.achievement span {
+    color: #bfa58b;
+    font-size: 13px;
+}
+
+/* TOAST */
+
+.toast {
+    position: fixed;
+    left: 50%;
+    top: 20px;
+    transform: translateX(-50%) translateY(-120px);
+    background: #302016;
+    border: 2px solid #9c6a32;
+    border-radius: 15px;
+    padding: 13px 18px;
+    z-index: 500;
+    box-shadow: 0 10px 40px #000;
+    transition: .4s;
+    width: min(90%, 400px);
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast b {
+    color: #ffd166;
+}
+
+/* EVENT */
+
+.event {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    background: rgba(20,8,2,.92);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.event.show {
+    display: flex;
+}
+
+.eventBox {
+    width: min(100%, 450px);
+    background: #351a0c;
+    border: 2px solid #d88c27;
+    border-radius: 25px;
+    padding: 30px 20px;
+    box-shadow: 0 0 60px rgba(255,150,30,.25);
+}
+
+.eventBox h2 {
+    font-size: 30px;
+}
+
+.eventButton {
+    background: #e69a2c;
+    color: #201006;
+    padding: 15px 25px;
+    border-radius: 14px;
+    font-weight: 900;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 430px) {
+    .app {
+        padding: 13px 10px 28px;
+    }
+
+    .menu {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .potatoArea {
+        min-height: 270px;
+    }
+
+    .potatoButton {
+        min-width: 230px;
+        min-height: 210px;
+    }
+
+    .panel {
+        padding: 16px;
+    }
+}
+
+@media (min-width: 700px) {
+    .potatoButton {
+        width: 340px;
+        height: 310px;
+    }
+
+    .menu {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="header">
+        <div class="title">
+            <h1>🥔 Potato Clicker</h1>
+            <div class="version">V8 • Potato Mania</div>
+        </div>
+
+        <button class="iconBtn" id="soundBtn">🔊</button>
+    </div>
+
+    <div class="counter" id="potatoes">0</div>
+    <div class="counterLabel">BATATAS</div>
+
+    <div class="power">
+        ⚡ <span id="power">1</span> por clique
+    </div>
+
+    <div class="comboBox">
+        <div class="comboTop">
+            <span>🔥 Combo x<span id="combo">1</span></span>
+            <span id="comboTimer">0</span>
+        </div>
+
+        <div class="comboBar">
+            <div class="comboFill" id="comboFill"></div>
+        </div>
+    </div>
+
+    <div class="potatoArea">
+
+        <button class="potatoButton" id="potatoButton" aria-label="Clique na batata">
+
+            <svg class="potatoSVG"
+                 viewBox="0 0 360 320"
+                 xmlns="http://www.w3.org/2000/svg">
+
+                <defs>
+                    <linearGradient id="potatoGradient"
+                                    x1="0" y1="0"
+                                    x2="1" y2="1">
+                        <stop offset="0%" stop-color="#e9ad62"/>
+                        <stop offset="50%" stop-color="#bd7330"/>
+                        <stop offset="100%" stop-color="#71340f"/>
+                    </linearGradient>
+                </defs>
+
+                <ellipse
+                    class="potatoBody"
+                    cx="180"
+                    cy="160"
+                    rx="140"
+                    ry="115"/>
+
+                <ellipse
+                    class="highlight"
+                    cx="130"
+                    cy="105"
+                    rx="50"
+                    ry="25"/>
+
+                <circle class="hole" cx="100" cy="130" r="8"/>
+                <circle class="hole" cx="270" cy="130" r="9"/>
+                <circle class="hole" cx="125" cy="205" r="7"/>
+                <circle class="hole" cx="245" cy="210" r="8"/>
+                <circle class="hole" cx="180" cy="85" r="6"/>
+                <circle class="hole" cx="180" cy="235" r="7"/>
+                <circle class="hole" cx="75" cy="175" r="5"/>
+                <circle class="hole" cx="285" cy="180" r="6"/>
+
+                <ellipse class="eye" cx="140" cy="145" rx="10" ry="14"/>
+                <ellipse class="eye" cx="220" cy="145" rx="10" ry="14"/>
+
+                <path
+                    class="mouth"
+                    d="M145 185 Q180 215 215 185 Q200 235 180 235 Q160 235 145 185Z"/>
+            </svg>
+
+        </button>
+    </div>
+
+    <div class="menu">
+        <button onclick="openModal('shopModal')">🛒 Loja</button>
+        <button onclick="openModal('skinModal')">🎨 Skins</button>
+        <button onclick="openModal('gameModal')">🎮 Minigames</button>
+        <button onclick="openModal('achievementModal')">🏆 Conquistas</button>
+        <button onclick="openModal('statsModal')">📊 Stats</button>
+        <button onclick="openModal('prestigeModal')">⭐ Prestígio</button>
+    </div>
+
+</div>
+
+
+<!-- LOJA -->
+
+<div class="modal" id="shopModal">
+<div class="panel">
+
+<button class="close" onclick="closeModal('shopModal')">✕</button>
+
+<h2>🛒 Loja</h2>
+<p>Melhore o poder de cada clique.</p>
+
+<div id="shop"></div>
+
+</div>
+</div>
+
+
+<!-- SKINS -->
+
+<div class="modal" id="skinModal">
+<div class="panel">
+
+<button class="close" onclick="closeModal('skinModal')">✕</button>
+
+<h2>🎨 Skins</h2>
+
+<div class="skinGrid">
+
+<button class="skin selected" id="skinClassic" onclick="buySkin('classic')">
+    <div class="skinPreview classic"></div>
+    🥔 Clássica<br>
+    <small>Grátis</small>
+</button>
+
+<button class="skin" id="skinGold" onclick="buySkin('gold')">
+    <div class="skinPreview gold"></div>
+    👑 Dourada<br>
+    <small>10.000</small>
+</button>
+
+<button class="skin" id="skinDiamond" onclick="buySkin('diamond')">
+    <div class="skinPreview diamond"></div>
+    💎 Diamante<br>
+    <small>100.000</small>
+</button>
+
+<button class="skin" id="skinLava" onclick="buySkin('lava')">
+    <div class="skinPreview lava"></div>
+    🌋 Lava<br>
+    <small>1M</small>
+</button>
+
+<button class="skin" id="skinGalaxy" onclick="buySkin('galaxy')">
+    <div class="skinPreview galaxy"></div>
+    🌌 Galáxia<br>
+    <small>10M</small>
+</button>
+
+<button class="skin" id="skinCosmic" onclick="buySkin('cosmic')">
+    <div class="skinPreview cosmic"></div>
+    🌠 Cósmica<br>
+    <small>100M</small>
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- MINIGAMES -->
+
+<div class="modal" id="gameModal">
+<div class="panel">
+
+<button class="close" onclick="closeModal('gameModal')">✕</button>
+
+<h2>🎮 Minigames</h2>
+
+<div class="gameCard">
+
+<h3>⚡ Clique Relâmpago</h3>
+
+<p>
+Clique no alvo o máximo de vezes possível em 10 segundos.
+</p>
+
+<button class="gameButton" onclick="startQuickGame()">
+COMEÇAR
+</button>
+
+<div class="quickArea" id="quickArea">
+    <button class="target" id="target"></button>
+</div>
+
+<p id="gameInfo"></p>
+
+</div>
+
+
+<div class="gameCard">
+
+<h3>🥔 Batata Dourada</h3>
+
+<p>
+Uma batata dourada aparece durante a partida. Clique nela rapidamente para ganhar um prêmio.
+</p>
+
+<button class="gameButton" onclick="forceGoldenEvent()">
+PROCURAR BATATA DOURADA
+</button>
+
+</div>
+
+
+<div class="gameCard">
+
+<h3>🎯 Desafio do Combo</h3>
+
+<p>
+Faça 15 cliques rápidos para ganhar um bônus especial.
+</p>
+
+<button class="gameButton" onclick="comboChallenge()">
+DESAFIAR
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- CONQUISTAS -->
+
+<div class="modal" id="achievementModal">
+<div class="panel">
+
+<button class="close" onclick="closeModal('achievementModal')">✕</button>
+
+<h2>🏆 Conquistas</h2>
+
+<div id="achievements"></div>
+
+</div>
+</div>
+
+
+<!-- STATS -->
+
+<div class="modal" id="statsModal">
+<div class="panel">
+
+<button class="close" onclick="closeModal('statsModal')">✕</button>
+
+<h2>📊 Estatísticas</h2>
+
+<p>🥔 Batatas atuais: <b id="statPotatoes">0</b></p>
+<p>👆 Cliques: <b id="statClicks">0</b></p>
+<p>💥 Críticos: <b id="statCrits">0</b></p>
+<p>🔥 Melhor combo: <b id="statCombo">0</b></p>
+<p>🎮 Minigames ganhos: <b id="statGames">0</b></p>
+<p>⭐ Prestígios: <b id="statPrestige">0</b></p>
+<p>⚡ Poder do clique: <b id="statPower">1</b></p>
+
+</div>
+</div>
+
+
+<!-- PRESTIGE -->
+
+<div class="modal" id="prestigeModal">
+<div class="panel">
+
+<button class="close" onclick="closeModal('prestigeModal')">✕</button>
+
+<h2>⭐ Prestígio</h2>
+
+<p>
+Reinicie suas batatas e upgrades para receber um multiplicador permanente.
+</p>
+
+<p>
+Necessário: <b>10.000.000 🥔</b>
+</p>
+
+<p>
+Prestígios: <b id="prestigeCount">0</b>
+</p>
+
+<p>
+Multiplicador: <b id="prestigeMultiplier">x1</b>
+</p>
+
+<button class="gameButton" id="prestigeButton" onclick="prestige()">
+FAZER PRESTÍGIO
+</button>
+
+</div>
+</div>
+
+
+<!-- EVENTO -->
+
+<div class="event" id="event">
+
+<div class="eventBox">
+
+<h2 id="eventTitle">🥔</h2>
+
+<p id="eventText"></p>
+
+<button class="eventButton" id="eventButton">
+PEGAR!
+</button>
+
+</div>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div class="toast" id="toast">
+    🏆 <b id="toastTitle">Conquista!</b>
+    <br>
+    <span id="toastText"></span>
+</div>
+
+
+<script>
+
+/* =========================
+   SAVE
+========================= */
+
+const SAVE_KEY = "potatoClickerV7";
+
+let save = {
+    potatoes: 0,
+    clicks: 0,
+    crits: 0,
+    power: 1,
+    combo: 1,
+    bestCombo: 0,
+    prestige: 0,
+    gamesWon: 0,
+    skin: "classic",
+    sound: true,
+    achievements: {},
+    upgrades: {}
+};
+
+try {
+    const old = JSON.parse(localStorage.getItem(SAVE_KEY));
+
+    if (old) {
+        save = {...save, ...old};
+    }
+} catch(e) {
+    console.log("Save inválido");
+}
+
+
+/* =========================
+   UPGRADES
+========================= */
+
+const upgrades = [
+
+    {
+        id: "sharp",
+        name: "🪓 Toque Afiado",
+        desc: "+1 poder por clique",
+        amount: 1,
+        base: 25
+    },
+
+    {
+        id: "strong",
+        name: "💪 Clique Forte",
+        desc: "+5 poder por clique",
+        amount: 5,
+        base: 250
+    },
+
+    {
+        id: "mega",
+        name: "🔥 Mega Clique",
+        desc: "+25 poder por clique",
+        amount: 25,
+        base: 2500
+    },
+
+    {
+        id: "ultra",
+        name: "⚡ Ultra Clique",
+        desc: "+100 poder por clique",
+        amount: 100,
+        base: 25000
+    },
+
+    {
+        id: "super",
+        name: "💥 Super Batata",
+        desc: "+500 poder por clique",
+        amount: 500,
+        base: 250000
+    },
+
+    {
+        id: "legend",
+        name: "👑 Clique Lendário",
+        desc: "+2.500 poder por clique",
+        amount: 2500,
+        base: 2500000
+    },
+
+    {
+        id: "god",
+        name: "🌌 Clique Divino",
+        desc: "+10.000 poder por clique",
+        amount: 10000,
+        base: 25000000
+    }
+
+];
+
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const potatoesEl = document.getElementById("potatoes");
+const powerEl = document.getElementById("power");
+const comboEl = document.getElementById("combo");
+const comboFill = document.getElementById("comboFill");
+const comboTimer = document.getElementById("comboTimer");
+const potatoButton = document.getElementById("potatoButton");
+
+let comboTime = 0;
+let comboInterval = null;
+
+
+/* =========================
+   SAVE
+========================= */
+
+function saveGame() {
+    localStorage.setItem(SAVE_KEY, JSON.stringify(save));
+}
+
+setInterval(saveGame, 5000);
+
+
+/* =========================
+   FORMAT
+========================= */
+
+function format(num) {
+
+    if (num < 1000)
+        return Math.floor(num);
+
+    if (num < 1000000)
+        return (num / 1000).toFixed(1) + "K";
+
+    if (num < 1000000000)
+        return (num / 1000000).toFixed(1) + "M";
+
+    if (num < 1000000000000)
+        return (num / 1000000000).toFixed(1) + "B";
+
+    return (num / 1000000000000).toFixed(1) + "T";
+}
+
+
+/* =========================
+   UI
+========================= */
+
+function updateUI() {
+
+    potatoesEl.textContent = format(save.potatoes);
+    powerEl.textContent = format(save.power);
+
+    comboEl.textContent = save.combo;
+
+    document.getElementById("statPotatoes").textContent =
+        format(save.potatoes);
+
+    document.getElementById("statClicks").textContent =
+        format(save.clicks);
+
+    document.getElementById("statCrits").textContent =
+        format(save.crits);
+
+    document.getElementById("statCombo").textContent =
+        save.bestCombo;
+
+    document.getElementById("statGames").textContent =
+        save.gamesWon;
+
+    document.getElementById("statPrestige").textContent =
+        save.prestige;
+
+    document.getElementById("statPower").textContent =
+        format(save.power);
+
+    document.getElementById("prestigeCount").textContent =
+        save.prestige;
+
+    document.getElementById("prestigeMultiplier").textContent =
+        "x" + getPrestigeMultiplier();
+
+    renderShop();
+    renderAchievements();
+
+    document.querySelectorAll(".skin").forEach(x =>
+        x.classList.remove("selected")
+    );
+
+    const selected =
+        document.getElementById("skin" +
+            save.skin.charAt(0).toUpperCase() +
+            save.skin.slice(1));
+
+    if (selected)
+        selected.classList.add("selected");
+}
+
+
+/* =========================
+   PRESTIGE
+========================= */
+
+function getPrestigeMultiplier() {
+    return 1 + save.prestige;
+}
+
+
+/* =========================
+   CLICK
+========================= */
+
+function doClick(e) {
+
+    let multiplier = getPrestigeMultiplier();
+
+    let comboMultiplier =
+        1 + Math.floor(save.combo / 5) * 0.25;
+
+    if (comboMultiplier > 3)
+        comboMultiplier = 3;
+
+    let amount =
+        save.power *
+        multiplier *
+        comboMultiplier;
+
+    let critical = Math.random() < .08;
+
+    if (critical) {
+        amount *= 5;
+        save.crits++;
+
+        showFloat(
+            e.clientX,
+            e.clientY,
+            "💥 CRÍTICO +" + format(amount),
+            true
+        );
+
+    } else {
+
+        showFloat(
+            e.clientX,
+            e.clientY,
+            "+" + format(amount),
+            false
+        );
+    }
+
+    save.potatoes += amount;
+    save.clicks++;
+
+    increaseCombo();
+
+    potatoButton.classList.remove("hit");
+
+    void potatoButton.offsetWidth;
+
+    potatoButton.classList.add("hit");
+
+    particles(e.clientX, e.clientY);
+
+    sound();
+
+    checkAchievements();
+
+    updateUI();
+    saveGame();
+}
+
+
+/* =========================
+   MOBILE + PC CLICK
+========================= */
+
+potatoButton.addEventListener("pointerdown", function(e) {
+
+    e.preventDefault();
+
+    doClick(e);
+
+});
+
+
+/* =========================
+   KEYBOARD PC
+========================= */
+
+document.addEventListener("keydown", function(e) {
+
+    if (
+        e.code === "Space" ||
+        e.code === "Enter"
+    ) {
+
+        if (
+            !document.querySelector(".modal.open") &&
+            !document.getElementById("event").classList.contains("show")
+        ) {
+
+            e.preventDefault();
+
+            const rect =
+                potatoButton.getBoundingClientRect();
+
+            doClick({
+                clientX: rect.left + rect.width / 2,
+                clientY: rect.top + rect.height / 2
+            });
+        }
+    }
+
+});
+
+
+/* =========================
+   COMBO
+========================= */
+
+function increaseCombo() {
+
+    save.combo++;
+
+    if (save.combo > save.bestCombo)
+        save.bestCombo = save.combo;
+
+    comboTime = 3;
+
+    clearInterval(comboInterval);
+
+    comboInterval = setInterval(() => {
+
+        comboTime -= .1;
+
+        comboFill.style.width =
+            Math.max(0, comboTime / 3 * 100) + "%";
+
+        comboTimer.textContent =
+            comboTime.toFixed(1);
+
+        if (comboTime <= 0) {
+
+            clearInterval(comboInterval);
+
+            save.combo = 1;
+
+            comboFill.style.width = "0%";
+
+            comboTimer.textContent = "0";
+
+            updateUI();
+        }
+
+    }, 100);
+
+}
+
+
+/* =========================
+   FLOAT
+========================= */
+
+function showFloat(x, y, text, crit) {
+
+    const el =
+        document.createElement("div");
+
+    el.className =
+        "floatText" + (crit ? " critText" : "");
+
+    el.textContent = text;
+
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+
+    document.body.appendChild(el);
+
+    setTimeout(() => el.remove(), 800);
+}
+
+
+/* =========================
+   PARTICLES
+========================= */
+
+function particles(x, y) {
+
+    for (let i = 0; i < 7; i++) {
+
+        const p =
+            document.createElement("div");
+
+        p.className = "particle";
+
+        p.style.left = x + "px";
+        p.style.top = y + "px";
+
+        const angle =
+            Math.random() * Math.PI * 2;
+
+        const distance =
+            30 + Math.random() * 70;
+
+        p.style.setProperty(
+            "--x",
+            Math.cos(angle) * distance + "px"
+        );
+
+        p.style.setProperty(
+            "--y",
+            Math.sin(angle) * distance + "px"
+        );
+
+        document.body.appendChild(p);
+
+        setTimeout(() => p.remove(), 700);
+    }
+}
+
+
+/* =========================
+   SOUND
+========================= */
+
+let audioContext = null;
+
+function sound() {
+
+    if (!save.sound)
+        return;
+
+    try {
+
+        if (!audioContext)
+            audioContext =
+                new (window.AudioContext ||
+                     window.webkitAudioContext)();
+
+        if (audioContext.state === "suspended")
+            audioContext.resume();
+
+        const osc =
+            audioContext.createOscillator();
+
+        const gain =
+            audioContext.createGain();
+
+        osc.frequency.value = 180;
+
+        gain.gain.setValueAtTime(
+            .07,
+            audioContext.currentTime
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            .001,
+            audioContext.currentTime + .08
+        );
+
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+
+        osc.start();
+        osc.stop(audioContext.currentTime + .08);
+
+    } catch(e) {}
+
+}
+
+
+/* =========================
+   SHOP
+========================= */
+
+function getUpgradeCost(up) {
+
+    const level =
+        save.upgrades[up.id] || 0;
+
+    return Math.floor(
+        up.base * Math.pow(2.05, level)
+    );
+}
+
+
+function buyUpgrade(id) {
+
+    const up =
+        upgrades.find(x => x.id === id);
+
+    if (!up)
+        return;
+
+    const cost =
+        getUpgradeCost(up);
+
+    if (save.potatoes < cost)
+        return;
+
+    save.potatoes -= cost;
+
+    save.power += up.amount;
+
+    save.upgrades[id] =
+        (save.upgrades[id] || 0) + 1;
+
+    showToast(
+        "Upgrade comprado!",
+        up.name + " +" + format(up.amount)
+    );
+
+    updateUI();
+    saveGame();
+}
+
+
+function renderShop() {
+
+    const shop =
+        document.getElementById("shop");
+
+    if (!shop)
+        return;
+
+    shop.innerHTML = "";
+
+    upgrades.forEach(up => {
+
+        const level =
+            save.upgrades[up.id] || 0;
+
+        const cost =
+            getUpgradeCost(up);
+
+        const button =
+            document.createElement("button");
+
+        button.className = "upgrade";
+
+        button.disabled =
+            save.potatoes < cost;
+
+        button.innerHTML = `
+            <div class="upName">${up.name}</div>
+            <div class="upDesc">${up.desc}</div>
+            <div class="upDesc">Nível ${level}</div>
+            <div class="upPrice">
+                🥔 ${format(cost)}
+            </div>
+        `;
+
+        button.onclick =
+            () => buyUpgrade(up.id);
+
+        shop.appendChild(button);
+
+    });
+}
+
+
+/* =========================
+   SKINS
+========================= */
+
+const skinPrices = {
+
+    classic: 0,
+    gold: 10000,
+    diamond: 100000,
+    lava: 1000000,
+    galaxy: 10000000,
+    cosmic: 100000000
+
+};
+
+
+function buySkin(skin) {
+
+    if (save.skin === skin)
+        return;
+
+    const price =
+        skinPrices[skin];
+
+    if (save.potatoes < price)
+        return;
+
+    save.potatoes -= price;
+
+    save.skin = skin;
+
+    applySkin();
+
+    showToast(
+        "Skin equipada!",
+        "Você está usando a skin " + skin
+    );
+
+    updateUI();
+    saveGame();
+}
+
+
+function applySkin() {
+
+    const gradient =
+        document.querySelector("#potatoGradient");
+
+    const skins = {
+
+        classic: ["#e9ad62", "#71340f"],
+
+        gold: ["#fff0a0", "#b77900"],
+
+        diamond: ["#e8ffff", "#2099c2"],
+
+        lava: ["#ffc247", "#c32617"],
+
+        galaxy: ["#9c70ff", "#17104b"],
+
+        cosmic: ["#ff8bdc", "#34106d"]
+
+    };
+
+    const colors =
+        skins[save.skin] || skins.classic;
+
+    gradient.children[0].setAttribute(
+        "stop-color",
+        colors[0]
+    );
+
+    gradient.children[1].setAttribute(
+        "stop-color",
+        colors[0]
+    );
+
+    gradient.children[2].setAttribute(
+        "stop-color",
+        colors[1]
+    );
+}
+
+
+/* =========================
+   ACHIEVEMENTS
+========================= */
+
+const achievements = [
+
+    {
+        id: "a100",
+        title: "🥔 Primeira Colheita",
+        desc: "Faça 100 batatas.",
+        requirement: 100
+    },
+
+    {
+        id: "a1000",
+        title: "🌱 Agricultor",
+        desc: "Faça 1.000 batatas.",
+        requirement: 1000
+    },
+
+    {
+        id: "a10000",
+        title: "🚜 Fazendeiro",
+        desc: "Faça 10.000 batatas.",
+        requirement: 10000
+    },
+
+    {
+        id: "a100k",
+        title: "🏭 Magnata",
+        desc: "Faça 100.000 batatas.",
+        requirement: 100000
+    },
+
+    {
+        id: "a1m",
+        title: "👑 Rei da Batata",
+        desc: "Faça 1 milhão de batatas.",
+        requirement: 1000000
+    },
+
+    {
+        id: "a10m",
+        title: "🌎 Império da Batata",
+        desc: "Faça 10 milhões de batatas.",
+        requirement: 10000000
+    },
+
+    {
+        id: "click100",
+        title: "👆 Dedo de Aço",
+        desc: "Faça 100 cliques.",
+        clicks: 100
+    },
+
+    {
+        id: "click1000",
+        title: "⚡ Máquina de Clicar",
+        desc: "Faça 1.000 cliques.",
+        clicks: 1000
+    }
+
+];
+
+
+function checkAchievements() {
+
+    achievements.forEach(a => {
+
+        if (save.achievements[a.id])
+            return;
+
+        let complete = false;
+
+        if (
+            a.requirement &&
+            save.potatoes >= a.requirement
+        )
+            complete = true;
+
+        if (
+            a.clicks &&
+            save.clicks >= a.clicks
+        )
+            complete = true;
+
+        if (complete) {
+
+            save.achievements[a.id] = true;
+
+            showToast(
+                "🏆 " + a.title,
+                a.desc
+            );
+        }
+
+    });
+
+}
+
+
+function renderAchievements() {
+
+    const box =
+        document.getElementById("achievements");
+
+    if (!box)
+        return;
+
+    box.innerHTML = "";
+
+    achievements.forEach(a => {
+
+        const done =
+            save.achievements[a.id];
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "achievement " +
+            (done ? "done" : "");
+
+        div.innerHTML = `
+            <strong>
+                ${done ? "✅" : "🔒"} ${a.title}
+            </strong>
+            <span>${a.desc}</span>
+        `;
+
+        box.appendChild(div);
+
+    });
+
+}
+
+
+/* =========================
+   MINIGAME 1
+========================= */
+
+let gameRunning = false;
+let gameTime = 10;
+let gameScore = 0;
+let gameTimer = null;
+
+function startQuickGame() {
+
+    if (gameRunning)
+        return;
+
+    gameRunning = true;
+    gameTime = 10;
+    gameScore = 0;
+
+    const target =
+        document.getElementById("target");
+
+    const info =
+        document.getElementById("gameInfo");
+
+    target.style.display = "block";
+
+    moveTarget();
+
+    info.textContent =
+        "Tempo: 10s • Acertos: 0";
+
+    gameTimer =
+        setInterval(() => {
+
+            gameTime -= .1;
+
+            info.textContent =
+                "Tempo: " +
+                gameTime.toFixed(1) +
+                "s • Acertos: " +
+                gameScore;
+
+            if (gameTime <= 0)
+                endQuickGame();
+
+        }, 100);
+
+}
+
+
+document.getElementById("target").addEventListener(
+    "pointerdown",
+    function(e) {
+
+        e.preventDefault();
+
+        if (!gameRunning)
+            return;
+
+        gameScore++;
+
+        save.potatoes +=
+            save.power * 2;
+
+        moveTarget();
+
+        particles(
+            e.clientX,
+            e.clientY
+        );
+
+    }
+);
+
+
+function moveTarget() {
+
+    const area =
+        document.getElementById("quickArea");
+
+    const target =
+        document.getElementById("target");
+
+    const maxX =
+        area.clientWidth - 62;
+
+    const maxY =
+        area.clientHeight - 62;
+
+    target.style.left =
+        Math.random() * maxX + "px";
+
+    target.style.top =
+        Math.random() * maxY + "px";
+
+}
+
+
+function endQuickGame() {
+
+    clearInterval(gameTimer);
+
+    gameRunning = false;
+
+    const target =
+        document.getElementById("target");
+
+    target.style.display = "none";
+
+    const reward =
+        Math.max(
+            100,
+            gameScore * save.power * 10
+        );
+
+    save.potatoes += reward;
+
+    save.gamesWon++;
+
+    document.getElementById("gameInfo").textContent =
+        "🏆 Você acertou " +
+        gameScore +
+        " vezes! +" +
+        format(reward) +
+        " batatas.";
+
+    showToast(
+        "🎮 Minigame vencido!",
+        "+" + format(reward) + " batatas"
+    );
+
+    updateUI();
+    saveGame();
+}
+
+
+/* =========================
+   GOLDEN POTATO EVENT
+========================= */
+
+let eventTimeout = null;
+
+function goldenEvent() {
+
+    const event =
+        document.getElementById("event");
+
+    const title =
+        document.getElementById("eventTitle");
+
+    const text =
+        document.getElementById("eventText");
+
+    title.textContent =
+        "✨ BATATA DOURADA!";
+
+    text.textContent =
+        "Uma batata dourada apareceu! Clique para receber um prêmio.";
+
+    event.classList.add("show");
+
+    clearTimeout(eventTimeout);
+
+    eventTimeout =
+        setTimeout(() => {
+
+            event.classList.remove("show");
+
+        }, 7000);
+
+}
+
+
+function forceGoldenEvent() {
+
+    closeModal("gameModal");
+
+    goldenEvent();
+
+}
+
+
+document.getElementById("eventButton").onclick =
+function() {
+
+    const reward =
+        Math.max(
+            500,
+            save.power * 100
+        );
+
+    save.potatoes += reward;
+
+    save.gamesWon++;
+
+    document.getElementById("event")
+        .classList.remove("show");
+
+    showToast(
+        "✨ Batata Dourada!",
+        "+" + format(reward) + " batatas"
+    );
+
+    updateUI();
+    saveGame();
+
+};
+
+
+/* =========================
+   RANDOM EVENTS
+========================= */
+
+setInterval(() => {
+
+    if (
+        !document.querySelector(".modal.open") &&
+        Math.random() < .35
+    ) {
+
+        goldenEvent();
+
+    }
+
+}, 45000);
+
+
+/* =========================
+   COMBO CHALLENGE
+========================= */
+
+function comboChallenge() {
+
+    if (save.combo >= 15) {
+
+        const reward =
+            save.power * 50;
+
+        save.potatoes += reward;
+
+        save.gamesWon++;
+
+        showToast(
+            "🔥 Desafio concluído!",
+            "+" + format(reward)
+        );
+
+        updateUI();
+        saveGame();
+
+    } else {
+
+        showToast(
+            "🔥 Combo insuficiente",
+            "Chegue ao combo x15!"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   PRESTIGE
+========================= */
+
+function prestige() {
+
+    if (save.potatoes < 10000000) {
+
+        showToast(
+            "⭐ Ainda não!",
+            "Você precisa de 10 milhões de batatas."
+        );
+
+        return;
+    }
+
+    if (
+        !confirm(
+            "Fazer Prestígio? Seus upgrades e batatas serão resetados."
+        )
+    )
+        return;
+
+    save.prestige++;
+
+    save.potatoes = 0;
+    save.power = 1;
+    save.combo = 1;
+
+    save.upgrades = {};
+
+    showToast(
+        "⭐ PRESTÍGIO!",
+        "Multiplicador permanente aumentado!"
+    );
+
+    updateUI();
+    saveGame();
+
+}
+
+
+/* =========================
+   MODALS
+========================= */
+
+function openModal(id) {
+
+    document
+        .getElementById(id)
+        .classList.add("open");
+
+    updateUI();
+}
+
+
+function closeModal(id) {
+
+    document
+        .getElementById(id)
+        .classList.remove("open");
+
+}
+
+
+/* fecha clicando fora */
+
+document.querySelectorAll(".modal").forEach(modal => {
+
+    modal.addEventListener("pointerdown", function(e) {
+
+        if (e.target === modal)
+            modal.classList.remove("open");
+
+    });
+
+});
+
+
+/* =========================
+   TOAST
+========================= */
+
+let toastTimeout;
+
+function showToast(title, text) {
+
+    document.getElementById("toastTitle")
+        .textContent = title;
+
+    document.getElementById("toastText")
+        .textContent = text;
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.classList.add("show");
+
+    clearTimeout(toastTimeout);
+
+    toastTimeout =
+        setTimeout(() => {
+
+            toast.classList.remove("show");
+
+        }, 3000);
+
+}
+
+
+/* =========================
+   SOUND BUTTON
+========================= */
+
+document.getElementById("soundBtn").onclick =
+function() {
+
+    save.sound = !save.sound;
+
+    this.textContent =
+        save.sound ? "🔊" : "🔇";
+
+    saveGame();
+
+};
+
+
+/* =========================
+   START
+========================= */
+
+applySkin();
+updateUI();
+
+document.getElementById("soundBtn").textContent =
+    save.sound ? "🔊" : "🔇";
+
+</script>
+
+</body>
+</html>
