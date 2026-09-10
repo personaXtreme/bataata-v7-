@@ -8,71 +8,424 @@
 <title>Potato Clicker V8</title>
 
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;min-height:100vh;background:radial-gradient(circle at top,#633817,#180b06 60%,#070303);color:#fff;font:16px Arial,sans-serif}
-button{font:inherit;border:0;color:#fff;cursor:pointer;user-select:none}
-#app{width:min(900px,100%);margin:auto;padding:14px}
-.head{display:flex;justify-content:space-between;align-items:center}
-h1{margin:0;font-size:clamp(26px,7vw,40px)}
-.ver{color:#d7a76d;font-size:12px}
-.icon,.menu button,.buy,.action{background:linear-gradient(#523019,#29150c);border-radius:13px;box-shadow:0 4px #130904}
-.icon{width:44px;height:44px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:14px}
-.stat{background:#29150c;border:1px solid #57351d;border-radius:12px;padding:8px;text-align:center;color:#cbb08e;font-size:12px}
-.stat b{display:block;color:#ffd166;font-size:17px;margin-top:3px}
-.big{text-align:center;font-size:clamp(38px,10vw,64px);font-weight:900;margin-top:13px}
-.power,.combo{text-align:center;color:#ffd166;font-weight:bold}
-.bar{height:9px;background:#29150c;border-radius:20px;overflow:hidden;max-width:520px;margin:8px auto}
-.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#f59e0b,#ffe082)}
-.potatoArea{height:315px;display:flex;align-items:center;justify-content:center}
-.potato{width:min(76vw,360px);height:300px;background:none;padding:0;touch-action:manipulation;filter:drop-shadow(0 25px 20px #000)}
-.potato:active{transform:scale(.91)}
-.potato svg{width:100%;height:100%}
-.hit{animation:hit .13s}
-@keyframes hit{50%{transform:scale(.88) rotate(3deg)}}
-.menu{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.menu button{min-height:55px;font-weight:bold}
-.menu button:active,.action:active,.buy:active{transform:translateY(3px);box-shadow:0 1px #130904}
-.modal,.event{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center;padding:12px;z-index:20}
-.modal.open,.event.show{display:flex}
-.panel,.eventBox{width:min(100%,720px);max-height:90vh;overflow:auto;background:linear-gradient(145deg,#3a2114,#150a06);border:2px solid #704321;border-radius:21px;padding:17px;box-shadow:0 20px 70px #000}
-.close{float:right;width:38px;height:38px;border-radius:11px;background:#5a251b}
-.card{background:#29150c;border:1px solid #5a351d;border-radius:14px;padding:12px;margin:8px 0}
-.small{color:#c5aa8c;font-size:13px}
-.gold{color:#ffd166}
-.row{display:flex;justify-content:space-between;gap:8px;align-items:center}
-.buy,.action{padding:11px 14px;font-weight:bold}
-.buy:disabled{opacity:.4}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.skin{background:#29150c;border:2px solid transparent;border-radius:14px;padding:10px}
-.skin.selected{border-color:#ffd166}
-.preview{width:85px;height:65px;border-radius:50%;margin:auto auto 8px}
-.classic{background:linear-gradient(145deg,#e9ad62,#71340f)}
-.gold{background:linear-gradient(145deg,#fff0a0,#a96b00)}
-.diamond{background:linear-gradient(145deg,#eaffff,#249bc5)}
-.lava{background:linear-gradient(145deg,#ffc247,#b51e16)}
-.galaxy{background:linear-gradient(145deg,#a778ff,#17104b)}
-.cosmic{background:linear-gradient(145deg,#ff9add,#351070)}
-.float{position:fixed;pointer-events:none;z-index:50;color:#ffe082;font-size:25px;font-weight:900;text-shadow:0 3px 7px #000;animation:up .8s forwards}
-@keyframes up{to{transform:translateY(-75px) scale(1.2);opacity:0}}
-.particle{position:fixed;width:8px;height:8px;border-radius:50%;background:#dfa04a;z-index:49;pointer-events:none;animation:part .7s forwards}
-@keyframes part{to{transform:translate(var(--x),var(--y)) scale(0);opacity:0}}
-.toast{position:fixed;top:15px;left:50%;transform:translate(-50%,-130px);transition:.35s;background:#302016;border:2px solid #a87332;border-radius:14px;padding:12px 17px;text-align:center;z-index:60;width:min(90%,420px);box-shadow:0 10px 40px #000}
-.toast.show{transform:translate(-50%,0)}
-.toast b{color:#ffd166}
-.zone{height:240px;background:#100704;border-radius:14px;position:relative;overflow:hidden;margin-top:10px}
-.target{position:absolute;width:54px;height:54px;border-radius:50%;background:#ffb703;box-shadow:0 0 25px #ff9800;display:none}
-.memory{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
-.memory button{height:55px;background:#4b2b17;border-radius:10px;font-size:23px}
-.event{text-align:center}
-.eventBox{width:min(100%,430px);max-height:none}
-.eventBox button{padding:14px 22px;border-radius:12px;background:#efa52e;color:#241004;font-weight:bold}
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:radial-gradient(circle at top,#633817,#180b06 60%,#070303);
+  color:#fff;
+  font:16px Arial,sans-serif;
+  transition:background 1s ease;
+}
+
+.farm-field{
+  background:linear-gradient(180deg,#79c95b 0%,#3e7d35 42%,#172e16 100%);
+}
+
+.farm-tractor{
+  background:linear-gradient(180deg,#78c8ef 0%,#3f7d9c 48%,#302318 100%);
+}
+
+.farm-green{
+  background:linear-gradient(180deg,#8ee5b0 0%,#276b52 45%,#102d24 100%);
+}
+
+.farm-factory{
+  background:linear-gradient(180deg,#68778a 0%,#303a48 48%,#11151b 100%);
+}
+
+.farm-market{
+  background:linear-gradient(180deg,#f0b45e 0%,#8b4e2b 48%,#29150d 100%);
+}
+
+.farm-castle{
+  background:radial-gradient(circle at 50% 15%,#9c82ff 0%,#33205f 38%,#0c0718 100%);
+}
+
+button{
+  font:inherit;
+  border:0;
+  color:#fff;
+  cursor:pointer;
+  user-select:none;
+}
+
+#app{
+  width:min(900px,100%);
+  margin:auto;
+  padding:14px;
+}
+
+.head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+h1{
+  margin:0;
+  font-size:clamp(26px,7vw,40px);
+}
+
+.ver{
+  color:#d7a76d;
+  font-size:12px;
+}
+
+.icon{
+  width:44px;
+  height:44px;
+  background:linear-gradient(#523019,#29150c);
+  border-radius:13px;
+  box-shadow:0 4px #130904;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:7px;
+  margin-top:14px;
+}
+
+.stat{
+  background:#29150c;
+  border:1px solid #57351d;
+  border-radius:12px;
+  padding:8px;
+  text-align:center;
+  color:#cbb08e;
+  font-size:12px;
+}
+
+.stat b{
+  display:block;
+  color:#ffd166;
+  font-size:17px;
+  margin-top:3px;
+}
+
+.big{
+  text-align:center;
+  font-size:clamp(38px,10vw,64px);
+  font-weight:900;
+  margin-top:13px;
+}
+
+.power,
+.combo{
+  text-align:center;
+  color:#ffd166;
+  font-weight:bold;
+}
+
+.bar{
+  height:9px;
+  background:#29150c;
+  border-radius:20px;
+  overflow:hidden;
+  max-width:520px;
+  margin:8px auto;
+}
+
+.bar i{
+  display:block;
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,#f59e0b,#ffe082);
+}
+
+.potatoArea{
+  height:315px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.potato{
+  width:min(76vw,360px);
+  height:300px;
+  background:none;
+  padding:0;
+  touch-action:manipulation;
+  filter:drop-shadow(0 25px 20px #000);
+}
+
+.potato:active{
+  transform:scale(.91);
+}
+
+.potato svg{
+  width:100%;
+  height:100%;
+}
+
+.hit{
+  animation:hit .13s;
+}
+
+@keyframes hit{
+  50%{
+    transform:scale(.88) rotate(3deg);
+  }
+}
+
+.menu{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+}
+
+.menu button,
+.buy,
+.action{
+  background:linear-gradient(#523019,#29150c);
+  border-radius:13px;
+  box-shadow:0 4px #130904;
+}
+
+.menu button{
+  min-height:55px;
+  font-weight:bold;
+}
+
+.menu button:active,
+.action:active,
+.buy:active{
+  transform:translateY(3px);
+  box-shadow:0 1px #130904;
+}
+
+.modal,
+.event{
+  position:fixed;
+  inset:0;
+  background:#000c;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:12px;
+  z-index:20;
+}
+
+.modal.open,
+.event.show{
+  display:flex;
+}
+
+.panel,
+.eventBox{
+  width:min(100%,720px);
+  max-height:90vh;
+  overflow:auto;
+  background:linear-gradient(145deg,#3a2114,#150a06);
+  border:2px solid #704321;
+  border-radius:21px;
+  padding:17px;
+  box-shadow:0 20px 70px #000;
+}
+
+.close{
+  float:right;
+  width:38px;
+  height:38px;
+  border-radius:11px;
+  background:#5a251b;
+}
+
+.card{
+  background:#29150c;
+  border:1px solid #5a351d;
+  border-radius:14px;
+  padding:12px;
+  margin:8px 0;
+}
+
+.small{
+  color:#c5aa8c;
+  font-size:13px;
+}
+
+.gold{
+  color:#ffd166;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  align-items:center;
+}
+
+.buy,
+.action{
+  padding:11px 14px;
+  font-weight:bold;
+}
+
+.buy:disabled{
+  opacity:.4;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+}
+
+.skin{
+  background:#29150c;
+  border:2px solid transparent;
+  border-radius:14px;
+  padding:10px;
+}
+
+.skin.selected{
+  border-color:#ffd166;
+}
+
+.preview{
+  width:85px;
+  height:65px;
+  border-radius:50%;
+  margin:auto auto 8px;
+}
+
+.classic{
+  background:linear-gradient(145deg,#e9ad62,#71340f);
+}
+
+.gold{
+  background:linear-gradient(145deg,#fff0a0,#a96b00);
+}
+
+.diamond{
+  background:linear-gradient(145deg,#eaffff,#249bc5);
+}
+
+.lava{
+  background:linear-gradient(145deg,#ffc247,#b51e16);
+}
+
+.galaxy{
+  background:linear-gradient(145deg,#a778ff,#17104b);
+}
+
+.cosmic{
+  background:linear-gradient(145deg,#ff9add,#351070);
+}
+
+.float{
+  position:fixed;
+  pointer-events:none;
+  z-index:50;
+  color:#ffe082;
+  font-size:25px;
+  font-weight:900;
+  text-shadow:0 3px 7px #000;
+  animation:up .8s forwards;
+}
+
+@keyframes up{
+  to{
+    transform:translateY(-75px) scale(1.2);
+    opacity:0;
+  }
+}
+
+.particle{
+  position:fixed;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#dfa04a;
+  z-index:49;
+  pointer-events:none;
+  animation:part .7s forwards;
+}
+
+@keyframes part{
+  to{
+    transform:translate(var(--x),var(--y)) scale(0);
+    opacity:0;
+  }
+}
+
+.toast{
+  position:fixed;
+  top:15px;
+  left:50%;
+  transform:translate(-50%,-130px);
+  transition:.35s;
+  background:#302016;
+  border:2px solid #a87332;
+  border-radius:14px;
+  padding:12px 17px;
+  text-align:center;
+  z-index:60;
+  width:min(90%,420px);
+  box-shadow:0 10px 40px #000;
+}
+
+.toast.show{
+  transform:translate(-50%,0);
+}
+
+.toast b{
+  color:#ffd166;
+}
+
+.zone{
+  height:240px;
+  background:#100704;
+  border-radius:14px;
+  position:relative;
+  overflow:hidden;
+  margin-top:10px;
+}
+
+.target{
+  position:absolute;
+  width:54px;
+  height:54px;
+  border-radius:50%;
+  background:#ffb703;
+  box-shadow:0 0 25px #ff9800;
+  display:none;
+}
+
+.memory{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:7px;
+}
+
+.memory button{
+  height:55px;
+  background:#4b2b17;
+  border-radius:10px;
+  font-size:23px;
+}
 
 @media(max-width:600px){
-.stats{grid-template-columns:repeat(2,1fr)}
-.menu{grid-template-columns:repeat(2,1fr)}
-.potatoArea{height:285px}
-.panel{padding:14px}
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .menu{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .potatoArea{
+    height:285px;
+  }
+
+  .panel{
+    padding:14px;
+  }
 }
 </style>
 </head>
@@ -81,1618 +434,2375 @@ h1{margin:0;font-size:clamp(26px,7vw,40px)}
 
 <div id="app">
 
-<div class="head">
-<div>
-<h1>🥔 Potato Clicker</h1>
-<div class="ver">V8 • Potato Mania</div>
-</div>
-<button class="icon" id="soundBtn">🔊</button>
-</div>
+  <div class="head">
+    <div>
+      <h1>🥔 Potato Clicker</h1>
+      <div class="ver">V8 • Potato Mania</div>
+    </div>
 
-<div class="stats">
-<div class="stat">🥔 Batatas<b id="pot">0</b></div>
-<div class="stat">🪙 Moedas<b id="coins">0</b></div>
-<div class="stat">⭐ Nível<b id="level">1</b></div>
-<div class="stat">🏆 XP<b id="xp">0/100</b></div>
-</div>
+    <button class="icon" id="soundBtn">🔊</button>
+  </div>
 
-<div class="big" id="big">0</div>
+  <div class="stats">
+    <div class="stat">
+      🥔 Batatas
+      <b id="pot">0</b>
+    </div>
 
-<div class="power">
-⚡ <span id="power">1</span> por clique • 💥 crítico <span id="crit">5</span>%
-</div>
+    <div class="stat">
+      🪙 Moedas
+      <b id="coins">0</b>
+    </div>
 
-<div class="bar"><i id="xpbar"></i></div>
+    <div class="stat">
+      ⭐ Nível
+      <b id="level">1</b>
+    </div>
 
-<div class="combo">
-🔥 Combo x<span id="combo">1</span> • <span id="timer">0.0</span>s
-</div>
+    <div class="stat">
+      🏆 XP
+      <b id="xp">0/100</b>
+    </div>
+  </div>
 
-<div class="potatoArea">
+  <div class="big" id="big">0</div>
 
-<button class="potato" id="potato" aria-label="Clique na batata">
+  <div class="power">
+    ⚡ <span id="power">1</span> por clique
+    • 💥 crítico <span id="crit">5</span>%
+  </div>
 
-<svg viewBox="0 0 360 320">
+  <div class="bar">
+    <i id="xpbar"></i>
+  </div>
 
-<defs>
-<linearGradient id="pg" x1="0" y1="0" x2="1" y2="1">
-<stop stop-color="#e9ad62"/>
-<stop offset=".5" stop-color="#bd7330"/>
-<stop offset="1" stop-color="#71340f"/>
-</linearGradient>
-</defs>
+  <div class="combo">
+    🔥 Combo x<span id="combo">1</span>
+    • <span id="timer">0.0</span>s
+  </div>
 
-<ellipse cx="180" cy="160" rx="140" ry="115"
-fill="url(#pg)" stroke="#63300f" stroke-width="7"/>
+  <div class="potatoArea">
 
-<ellipse cx="130" cy="105" rx="50" ry="25"
-fill="#ffd58f" opacity=".3"/>
+    <button
+      class="potato"
+      id="potato"
+      aria-label="Clique na batata"
+    >
 
-<g fill="#6e3514" opacity=".65">
-<circle cx="100" cy="130" r="8"/>
-<circle cx="270" cy="130" r="9"/>
-<circle cx="125" cy="205" r="7"/>
-<circle cx="245" cy="210" r="8"/>
-<circle cx="180" cy="85" r="6"/>
-<circle cx="180" cy="235" r="7"/>
-<circle cx="75" cy="175" r="5"/>
-<circle cx="285" cy="180" r="6"/>
-</g>
+      <svg viewBox="0 0 360 320">
 
-<g fill="#241008">
-<ellipse cx="140" cy="145" rx="10" ry="14"/>
-<ellipse cx="220" cy="145" rx="10" ry="14"/>
-<path d="M145 185Q180 215 215 185Q200 235 180 235Q160 235 145 185Z"/>
-</g>
+        <defs>
+          <linearGradient id="pg" x1="0" y1="0" x2="1" y2="1">
+            <stop stop-color="#e9ad62"/>
+            <stop offset=".5" stop-color="#bd7330"/>
+            <stop offset="1" stop-color="#71340f"/>
+          </linearGradient>
+        </defs>
 
-</svg>
-</button>
+        <ellipse
+          cx="180"
+          cy="160"
+          rx="140"
+          ry="115"
+          fill="url(#pg)"
+          stroke="#63300f"
+          stroke-width="7"
+        />
 
-</div>
+        <ellipse
+          cx="130"
+          cy="105"
+          rx="50"
+          ry="25"
+          fill="#ffd58f"
+          opacity=".3"
+        />
 
-<div class="menu">
-<button onclick="openM('shop')">🛒 Loja</button>
-<button onclick="openM('games')">🎮 Jogos</button>
-<button onclick="openM('skins')">🎨 Skins</button>
-<button onclick="openM('ach')">🏆 Conquistas</button>
-<button onclick="openM('farm')">🌾 Fazenda</button>
-<button onclick="openM('prest')">⭐ Prestígio</button>
-<button onclick="openM('stats')">📊 Stats</button>
-<button onclick="openM('settings')">⚙️ Config</button>
-</div>
+        <g fill="#6e3514" opacity=".65">
+          <circle cx="100" cy="130" r="8"/>
+          <circle cx="270" cy="130" r="9"/>
+          <circle cx="125" cy="205" r="7"/>
+          <circle cx="245" cy="210" r="8"/>
+          <circle cx="180" cy="85" r="6"/>
+          <circle cx="180" cy="235" r="7"/>
+          <circle cx="75" cy="175" r="5"/>
+          <circle cx="285" cy="180" r="6"/>
+        </g>
+
+        <g fill="#241008">
+          <ellipse cx="140" cy="145" rx="10" ry="14"/>
+          <ellipse cx="220" cy="145" rx="10" ry="14"/>
+
+          <path
+            d="M145 185Q180 215 215 185Q200 235 180 235Q160 235 145 185Z"
+          />
+        </g>
+
+      </svg>
+
+    </button>
+
+  </div>
+
+  <div class="menu">
+
+    <button onclick="openM('shop')">🛒 Loja</button>
+    <button onclick="openM('games')">🎮 Jogos</button>
+    <button onclick="openM('passive')">🔮 Passivas</button>
+    <button onclick="openM('skins')">🎨 Skins</button>
+
+    <button onclick="openM('ach')">🏆 Conquistas</button>
+    <button onclick="openM('farm')">🌾 Fazenda</button>
+    <button onclick="openM('prest')">⭐ Prestígio</button>
+    <button onclick="openM('stats')">📊 Stats</button>
+
+    <button onclick="openM('settings')">⚙️ Config</button>
+    <button onclick="openM('lore')">📖 Lore</button>
+
+  </div>
 
 </div>
 
 <!-- LOJA -->
 
 <div class="modal" id="shop">
-<div class="panel">
-<button class="close" onclick="closeM('shop')">✕</button>
-<h2>🛒 Loja</h2>
-<p class="small">Upgrades focados no clique, crítico e combo.</p>
-<div id="shopList"></div>
-</div>
+
+  <div class="panel">
+
+    <button class="close" onclick="closeM('shop')">✕</button>
+
+    <h2>🛒 Loja</h2>
+
+    <p class="small">
+      Upgrades focados no clique, crítico, combo e automação.
+    </p>
+
+    <div class="card">
+
+      <b>⚡ Upgrades de Clique</b>
+
+      <div class="small">
+        Mais de 15 upgrades, incluindo a progressão 100T+.
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <b>🤖 Automação</b>
+
+      <div class="small">
+        Cliques automáticos por segundo:
+        <strong id="autoRate">0</strong>
+      </div>
+
+    </div>
+
+    <div id="shopList"></div>
+
+  </div>
+
 </div>
 
-<!-- MINIGAMES -->
+<!-- JOGOS -->
 
 <div class="modal" id="games">
-<div class="panel">
 
-<button class="close" onclick="closeM('games')">✕</button>
+  <div class="panel">
 
-<h2>🎮 Minigames</h2>
+    <button class="close" onclick="closeM('games')">✕</button>
 
-<div class="card">
-<h3>⚡ Clique Relâmpago</h3>
-<p class="small">10 segundos. O alvo diminui conforme você acerta.</p>
-<button class="action" onclick="startQuick()">Começar</button>
-<div class="zone" id="quickZone">
-<button class="target" id="target"></button>
+    <h2>🎮 Minigames</h2>
+
+    <button class="action" onclick="startQuick()">
+      ⚡ Clique Relâmpago
+    </button>
+
+    <button class="action" onclick="precision()">
+      🎯 Precisão
+    </button>
+
+    <button class="action" onclick="memoryStart()">
+      🧠 Memória
+    </button>
+
+    <button class="action" onclick="rightPotato()">
+      🥔 Batata Certa
+    </button>
+
+    <div class="card" id="quickZone">
+
+      <div
+        id="target"
+        class="target"
+      ></div>
+
+      <div id="quickInfo" class="small">
+        Acerte o alvo!
+      </div>
+
+    </div>
+
+    <div class="card" id="memory">
+      Escolha um minigame.
+    </div>
+
+    <div class="card" id="rightGame">
+      Escolha um minigame.
+    </div>
+
+  </div>
+
 </div>
-<p id="quickInfo"></p>
-</div>
 
-<div class="card">
-<h3>🎯 Precisão</h3>
-<p class="small">Clique no centro para ganhar um prêmio maior.</p>
-<button class="action" onclick="precision()">Jogar</button>
-</div>
+<!-- PASSIVAS -->
 
-<div class="card">
-<h3>🧠 Memória</h3>
-<p class="small">Memorize a sequência e repita.</p>
-<button class="action" onclick="memoryStart()">Jogar</button>
-<div id="memory"></div>
-</div>
+<div class="modal" id="passive">
 
-<div class="card">
-<h3>🥔 Batata Certa</h3>
-<p class="small">Escolha a verdadeira entre as falsas.</p>
-<button class="action" onclick="rightPotato()">Começar</button>
-<div id="rightGame"></div>
-</div>
+  <div class="panel">
 
-</div>
+    <button class="close" onclick="closeM('passive')">✕</button>
+
+    <h2>🔮 Passivas</h2>
+
+    <p class="small">
+      Bônus permanentes que melhoram sua batata.
+    </p>
+
+    <div id="passiveList"></div>
+
+  </div>
+
 </div>
 
 <!-- SKINS -->
 
 <div class="modal" id="skins">
-<div class="panel">
-<button class="close" onclick="closeM('skins')">✕</button>
-<h2>🎨 Skins</h2>
-<div class="grid" id="skinList"></div>
-</div>
+
+  <div class="panel">
+
+    <button class="close" onclick="closeM('skins')">✕</button>
+
+    <h2>🎨 Skins</h2>
+
+    <div class="grid" id="skinList"></div>
+
+  </div>
+
 </div>
 
 <!-- CONQUISTAS -->
 
 <div class="modal" id="ach">
-<div class="panel">
-<button class="close" onclick="closeM('ach')">✕</button>
-<h2>🏆 Conquistas</h2>
-<div id="achList"></div>
-</div>
+
+  <div class="panel">
+
+    <button class="close" onclick="closeM('ach')">✕</button>
+
+    <h2>🏆 Conquistas</h2>
+
+    <div id="achList"></div>
+
+  </div>
+
 </div>
 
 <!-- FAZENDA -->
 
 <div class="modal" id="farm">
-<div class="panel">
-<button class="close" onclick="closeM('farm')">✕</button>
-<h2>🌾 Fazenda</h2>
-<p class="small">Desbloqueie regiões e desafios. Não é um gerador passivo.</p>
-<div id="farmList"></div>
-</div>
+
+  <div class="panel">
+
+    <button class="close" onclick="closeM('farm')">✕</button>
+
+    <h2>🌾 Fazenda</h2>
+
+    <p class="small">
+      Cada região muda o cenário e libera bônus.
+    </p>
+
+    <div id="farmList"></div>
+
+  </div>
+
 </div>
 
-<!-- PRESTIGIO -->
+<!-- PRESTÍGIO -->
 
 <div class="modal" id="prest">
-<div class="panel">
-<button class="close" onclick="closeM('prest')">✕</button>
-<h2>⭐ Prestígio</h2>
 
-<p>
-Recomece sua rodada para ganhar um multiplicador permanente.
-</p>
+  <div class="panel">
 
-<div class="card">
-Requisito:
-<b class="gold" id="preq">10M</b>
-<br>
-Prestígios:
-<b id="pres">0</b>
-<br>
-Multiplicador:
-<b id="mult">x1.0</b>
-</div>
+    <button class="close" onclick="closeM('prest')">✕</button>
 
-<button class="action" onclick="prestige()">
-Fazer Prestígio
-</button>
+    <h2>⭐ Prestígio</h2>
 
-</div>
+    <div id="prestText"></div>
+
+  </div>
+
 </div>
 
 <!-- STATS -->
 
 <div class="modal" id="stats">
-<div class="panel">
-<button class="close" onclick="closeM('stats')">✕</button>
-<h2>📊 Estatísticas</h2>
-<div id="statsText"></div>
-</div>
+
+  <div class="panel">
+
+    <button class="close" onclick="closeM('stats')">✕</button>
+
+    <h2>📊 Estatísticas</h2>
+
+    <div id="statsText"></div>
+
+  </div>
+
 </div>
 
-<!-- SETTINGS -->
+<!-- CONFIG -->
 
 <div class="modal" id="settings">
-<div class="panel">
 
-<button class="close" onclick="closeM('settings')">✕</button>
+  <div class="panel">
 
-<h2>⚙️ Configurações</h2>
+    <button class="close" onclick="closeM('settings')">✕</button>
 
-<button class="action" onclick="toggleSound()">
-Som: <span id="soundText"></span>
-</button>
+    <h2>⚙️ Configurações</h2>
 
-<br><br>
+    <button class="action" onclick="toggleSound()">
+      🔊 Som
+    </button>
 
-<button class="action" onclick="toggleAdmin()">
-🔐 Menu secreto
-</button>
+    <button class="action" onclick="secretAdmin()">
+      🔐 Menu secreto
+    </button>
 
-<br><br>
+    <button
+      class="action"
+      onclick="resetGame()"
+    >
+      🗑️ Apagar progresso
+    </button>
 
-<button class="action" onclick="resetGame()">
-🗑️ Apagar progresso
-</button>
+  </div>
 
-</div>
 </div>
 
 <!-- ADMIN -->
 
 <div class="modal" id="admin">
-<div class="panel">
 
-<button class="close" onclick="closeM('admin')">✕</button>
+  <div class="panel">
 
-<h2>🛠️ ADMIN / OP</h2>
+    <button class="close" onclick="closeM('admin')">✕</button>
 
-<p class="small">
-Menu secreto liberado pelo código 48.
-</p>
+    <h2>🛠️ ADMIN OP</h2>
 
-<div class="grid">
+    <button class="action" onclick="opGive(1e12)">
+      +1T Batatas
+    </button>
 
-<button class="action" onclick="opGive(1e12)">
-💰 +1T batatas
-</button>
+    <button class="action" onclick="opGive(1e14)">
+      +100T Batatas
+    </button>
 
-<button class="action" onclick="opGive(1e14)">
-🚀 +100T batatas
-</button>
+    <button class="action" onclick="opGive(1e15)">
+      +1Qa Batatas
+    </button>
 
-<button class="action" onclick="opGive(1e15)">
-🌌 +1Qa batatas
-</button>
+    <button class="action" onclick="opGive(1e18)">
+      +1Qi Batatas
+    </button>
 
-<button class="action" onclick="opGive(1e18)">
-🔮 +1Qi batatas
-</button>
+    <button class="action" onclick="opPower()">
+      Poder = 1Qa
+    </button>
 
-<button class="action" onclick="opPower()">
-💥 Poder de clique máximo
-</button>
+    <button class="action" onclick="opCoins()">
+      +1M Moedas
+    </button>
 
-<button class="action" onclick="opCoins()">
-🪙 +1M moedas
-</button>
+    <button class="action" onclick="opSkins()">
+      Liberar Skins
+    </button>
 
-<button class="action" onclick="opSkins()">
-🎨 Liberar todas as skins
-</button>
+    <button class="action" onclick="opAch()">
+      Completar Conquistas
+    </button>
 
-<button class="action" onclick="opAch()">
-🏆 Completar conquistas
-</button>
+    <button class="action" onclick="opPrestige()">
+      +10 Prestígios
+    </button>
 
-<button class="action" onclick="opPrestige()">
-⭐ +10 prestígios
-</button>
+  </div>
 
 </div>
 
-<p class="small">
-⚠️ Essas funções alteram seu progresso salvo.
-</p>
+<!-- LORE -->
 
-</div>
-</div>
+<div class="modal" id="lore">
 
-<!-- EVENTO -->
+  <div class="panel">
 
-<div class="event" id="event">
-<div class="eventBox">
-<h2>✨ BATATA DOURADA</h2>
-<p>Ela apareceu! Pegue antes que desapareça.</p>
-<button id="eventBtn">PEGAR</button>
-</div>
+    <button class="close" onclick="closeM('lore')">✕</button>
+
+    <h2>📖 A História da Batata</h2>
+
+    <div id="loreText"></div>
+
+  </div>
+
 </div>
 
 <!-- TOAST -->
 
 <div class="toast" id="toast">
-<b id="toastT"></b>
-<br>
-<span id="toastD"></span>
+
+  <b id="toastT"></b>
+
+  <div id="toastD"></div>
+
+</div>
+
+<!-- EVENTO -->
+
+<div class="event" id="event">
+
+  <div class="eventBox">
+
+    <h2>✨ BATATA DOURADA!</h2>
+
+    <p>
+      Uma batata dourada apareceu!
+    </p>
+
+    <button id="eventBtn">
+      🥔 PEGAR
+    </button>
+
+  </div>
+
 </div>
 
 <script>
 
 const KEY="potatoClickerV8";
 
-const base={
-potatoes:0,
-coins:0,
-xp:0,
-level:1,
-clicks:0,
-crits:0,
-power:1,
-combo:1,
-bestCombo:1,
-prestige:0,
-games:0,
-sound:true,
-skin:"classic",
-skins:["classic"],
-up:{},
-ach:{},
-farm:{},
-admin:false
-};
-
-let s={...base};
-
-try{
-const o=JSON.parse(localStorage.getItem(KEY));
-if(o){
-s={
-...base,
-...o,
-up:{...base.up,...o.up},
-ach:{...base.ach,...o.ach},
-farm:{...base.farm,...o.farm}
-};
-}
-}catch(e){}
-
 const $=id=>document.getElementById(id);
 
-const fmt=n=>{
-const u=[
-"",
-"K","M","B","T",
-"Qa","Qi","Sx","Sp","Oc","No",
-"Dc","Ud","Dd","Td"
-];
+function defaultState(){
 
-if(!Number.isFinite(n))return "∞";
+  return {
 
-let i=0;
+    potatoes:0,
+    coins:0,
 
-while(Math.abs(n)>=1000&&i<u.length-1){
-n/=1000;
-i++;
-}
+    level:1,
+    xp:0,
 
-return(
-i===0
-?Math.floor(n)
-:n>=100
-?n.toFixed(0)
-:n>=10
-?n.toFixed(1)
-:n.toFixed(2)
-)+u[i];
-};
+    power:1,
+    clicks:0,
+    crits:0,
 
-const need=()=>Math.floor(100*Math.pow(1.42,s.level-1));
+    critChance:5,
+    critMulti:5,
 
-const multi=()=>1+s.prestige*.5;
+    combo:1,
+    bestCombo:1,
 
-const ups=[
-["tap","👆 Dedo Forte","+2 poder",2,40],
-["iron","🦾 Mão de Ferro","+10 poder",10,500],
-["mega","🔥 Mega Clique","+50 poder",50,7000],
-["ultra","⚡ Ultra Clique","+250 poder",250,1e5],
-["nuke","💥 Clique Nuclear","+1.500 poder",1500,1.8e6],
-["divine","🌌 Clique Divino","+10.000 poder",1e4,5e7],
-["crit","💥 Treino Crítico","+2% crítico",0,15000],
-["critD","☄️ Crítico Brutal","+0,5x crítico",0,250000],
-["combo","🔥 Combo Mestre","+5 combo máximo",0,50000]
-];
+    prestige:0,
 
-const skinData={
-classic:["Clássica",0,"classic"],
-gold:["Dourada",1e4,"gold"],
-diamond:["Diamante",1e5,"diamond"],
-lava:["Lava",1e6,"lava"],
-galaxy:["Galáxia",1e7,"galaxy"],
-cosmic:["Cósmica",1e8,"cosmic"],
-robot:["Robótica",5e8,"cosmic"],
-rainbow:["Arco-Íris",2e9,"cosmic"]
-};
+    games:0,
 
-const achs=[
-["a1","🥔 Primeira Colheita","100 batatas",()=>s.potatoes>=100],
-["a2","🚜 Fazendeiro","10 mil batatas",()=>s.potatoes>=1e4],
-["a3","👑 Rei da Batata","1 milhão",()=>s.potatoes>=1e6],
-["a4","🌌 Imperador","100 milhões",()=>s.potatoes>=1e8],
-["a5","👆 Dedo de Aço","100 cliques",()=>s.clicks>=100],
-["a6","⚡ Máquina","10 mil cliques",()=>s.clicks>=1e4],
-["a7","🔥 Combo Insano","Combo x25",()=>s.bestCombo>=25],
-["a8","💥 Sortudo","Faça um crítico",()=>s.crits>=1],
-["a9","🎮 Gamer","5 vitórias",()=>s.games>=5],
-["a10","⭐ Renascimento","1 prestígio",()=>s.prestige>=1],
-["a11","🎨 Colecionador","4 skins",()=>s.skins.length>=4],
-["a12","📈 Veterano","Nível 20",()=>s.level>=20]
-];
+    sound:true,
+    admin:false,
 
-const farms=[
-["field","🌱 Campo",1e4],
-["tractor","🚜 Trator",1e5],
-["green","🌿 Estufa",1e6],
-["factory","🏭 Fábrica",1e7],
-["market","🏪 Mercado",1e8],
-["castle","🏰 Império",1e9]
-];
+    skins:["classic"],
+    skin:"classic",
 
-function save(){
-localStorage.setItem(KEY,JSON.stringify(s));
-}
+    ach:{},
 
-function xpAdd(n){
+    up:{},
 
-s.xp+=n;
+    passive:{},
 
-while(s.xp>=need()){
-s.xp-=need();
-s.level++;
-toast("📈 Novo nível!","Nível "+s.level);
-}
+    farm:{}
+
+  };
 
 }
 
-function critChance(){
-return Math.min(45,5+(s.up.crit||0)*2);
-}
-
-function render(){
-
-$("pot").textContent=fmt(s.potatoes);
-$("big").textContent=fmt(s.potatoes);
-$("coins").textContent=fmt(s.coins);
-$("power").textContent=fmt(s.power);
-$("level").textContent=s.level;
-
-$("xp").textContent=
-Math.floor(s.xp)+"/"+need();
-
-$("xpbar").style.width=
-Math.min(100,s.xp/need()*100)+"%";
-
-$("combo").textContent=s.combo;
-
-$("crit").textContent=critChance();
-
-$("pres").textContent=s.prestige;
-
-$("mult").textContent=
-"x"+multi().toFixed(1);
-
-$("preq").textContent=
-fmt(1e7*Math.pow(4,s.prestige));
-
-$("soundText").textContent=
-s.sound?"Ligado":"Desligado";
-
-renderShop();
-renderSkins();
-renderAch();
-renderFarm();
-renderStats();
-
-save();
-
-}
-
-let comboTime=0;
-
-function clickPot(e){
-
-let cm=Math.min(
-5,
-1+Math.floor(s.combo/5)*.25
-);
-
-let amount=
-s.power*multi()*cm;
-
-let crit=
-Math.random()<critChance()/100;
-
-if(crit){
-
-amount*=
-4+(s.up.critD||0)*.5;
-
-s.crits++;
-
-}
-
-s.potatoes+=amount;
-s.clicks++;
-
-xpAdd(
-Math.max(1,Math.floor(amount/8))
-);
-
-s.combo++;
-
-s.bestCombo=
-Math.max(s.bestCombo,s.combo);
-
-comboTime=3;
-
-float(
-e.clientX,
-e.clientY,
-(crit?"💥 ":"+")+fmt(amount),
-crit
-);
-
-parts(
-e.clientX,
-e.clientY
-);
-
-beep();
-
-$("potato").classList.remove("hit");
-
-void $("potato").offsetWidth;
-
-$("potato").classList.add("hit");
-
-checkAch();
-
-render();
-
-}
-
-$("potato").addEventListener(
-"pointerdown",
-e=>{
-e.preventDefault();
-clickPot(e);
-}
-);
-
-document.addEventListener("keydown",e=>{
-
-if(
-(e.code==="Space"||e.code==="Enter")&&
-!document.querySelector(".modal.open")&&
-!$("event").classList.contains("show")
-){
-
-e.preventDefault();
-
-const r=
-$("potato").getBoundingClientRect();
-
-clickPot({
-clientX:r.left+r.width/2,
-clientY:r.top+r.height/2
-});
-
-}
-
-});
-
-setInterval(()=>{
-
-if(comboTime>0){
-
-comboTime-=.1;
-
-if(comboTime<=0)
-s.combo=1;
-
-}
-
-render();
-
-},100);
-
-function float(x,y,t,c){
-
-const d=document.createElement("div");
-
-d.className="float";
-d.textContent=t;
-
-d.style.left=x+"px";
-d.style.top=y+"px";
-
-if(c)
-d.style.color="#ff7043";
-
-document.body.appendChild(d);
-
-setTimeout(()=>d.remove(),800);
-
-}
-
-function parts(x,y){
-
-for(let i=0;i<7;i++){
-
-const p=document.createElement("i");
-
-p.className="particle";
-
-p.style.left=x+"px";
-p.style.top=y+"px";
-
-const a=Math.random()*6.28;
-const d=30+Math.random()*70;
-
-p.style.setProperty(
-"--x",
-Math.cos(a)*d+"px"
-);
-
-p.style.setProperty(
-"--y",
-Math.sin(a)*d+"px"
-);
-
-document.body.appendChild(p);
-
-setTimeout(()=>p.remove(),700);
-
-}
-
-}
-
-let audio;
-
-function beep(){
-
-if(!s.sound)return;
+let s=defaultState();
 
 try{
 
-audio??=
-new(window.AudioContext||
-window.webkitAudioContext)();
+  const saved=localStorage.getItem(KEY);
 
-audio.resume();
+  if(saved){
 
-const o=audio.createOscillator();
-const g=audio.createGain();
+    s={
+      ...defaultState(),
+      ...JSON.parse(saved)
+    };
 
-o.frequency.value=170;
-
-g.gain.value=.05;
-
-g.gain.exponentialRampToValueAtTime(
-.001,
-audio.currentTime+.07
-);
-
-o.connect(g);
-g.connect(audio.destination);
-
-o.start();
-
-o.stop(
-audio.currentTime+.07
-);
+  }
 
 }catch(e){}
 
+function save(){
+
+  localStorage.setItem(
+    KEY,
+    JSON.stringify(s)
+  );
+
 }
 
-function price(u){
+function fmt(n){
 
-return Math.floor(
-u[4]*Math.pow(
-2.25,
-s.up[u[0]]||0
-)
-);
+  if(!Number.isFinite(n))
+    return "∞";
+
+  const units=[
+    "",
+    "K",
+    "M",
+    "B",
+    "T",
+    "Qa",
+    "Qi",
+    "Sx",
+    "Sp",
+    "Oc",
+    "No",
+    "Dc",
+    "Ud",
+    "Dd",
+    "Td",
+    "Qad",
+    "Qid"
+  ];
+
+  let i=0;
+
+  while(
+    Math.abs(n)>=1000 &&
+    i<units.length-1
+  ){
+
+    n/=1000;
+    i++;
+
+  }
+
+  return n>=100
+    ? n.toFixed(0)+units[i]
+    : n>=10
+    ? n.toFixed(1)+units[i]
+    : n.toFixed(2)+units[i];
+
+}
+
+function xpNeed(){
+
+  return Math.floor(
+    100*Math.pow(1.28,s.level-1)
+  );
+
+}
+
+function prestigeMulti(){
+
+  return 1+s.prestige*0.25;
+
+}
+
+function farmMulti(){
+
+  let m=1;
+
+  if(s.farm.field)m*=1.1;
+  if(s.farm.tractor)m*=1.25;
+  if(s.farm.green)m*=1.5;
+  if(s.farm.factory)m*=1.8;
+  if(s.farm.market)m*=2.2;
+  if(s.farm.castle)m*=3;
+
+  return m;
+
+}
+
+function passiveMulti(){
+
+  let m=1;
+
+  Object.keys(s.passive||{}).forEach(k=>{
+
+    const lvl=s.passive[k]||0;
+
+    m*=1+lvl*.04;
+
+  });
+
+  return m;
+
+}
+
+function gameMulti(){
+
+  return prestigeMulti()
+       *farmMulti()
+       *passiveMulti();
+
+}
+
+function coinMulti(){
+
+  return 1+
+    (s.passive.coin||0)*.1;
+
+}
+
+function autoRate(){
+
+  let r=0;
+
+  r+=(s.up.auto1||0)*1;
+  r+=(s.up.auto2||0)*5;
+  r+=(s.up.auto3||0)*25;
+  r+=(s.up.auto4||0)*100;
+  r+=(s.up.auto5||0)*500;
+  r+=(s.up.auto6||0)*2500;
+
+  return r;
+
+}
+
+/* UPGRADES */
+
+const ups=[
+
+  ["tap","💪 Dedo Forte","+2 poder","50"],
+  ["iron","🦾 Mão de Ferro","+10 poder","500"],
+  ["mega","💥 Mega Clique","+50 poder","5000"],
+  ["ultra","⚡ Ultra Clique","+250 poder","50000"],
+  ["nuke","☢️ Clique Nuclear","+1500 poder","500000"],
+  ["divine","👑 Clique Divino","+10000 poder","5000000"],
+
+  ["cosmic","🌌 Clique Cósmico","+1M poder","1e12"],
+  ["galactic","🪐 Clique Galáctico","+100M poder","1e14"],
+  ["quantum","⚛️ Clique Quântico","+10B poder","1e16"],
+  ["multi","🌠 Clique Multiversal","+1T poder","1e18"],
+  ["infinite","♾️ Clique Infinito","+100T poder","1e20"],
+  ["void","🕳️ Clique do Vazio","+10Qa poder","1e22"],
+  ["supreme","👑 Clique Divino Supremo","+1Qi poder","1e24"],
+
+  ["crit","🍀 Treino Crítico","+2% crítico","10000"],
+  ["critD","💥 Crítico Brutal","+0.5x crítico","100000"],
+  ["combo","🔥 Combo Mestre","+1 combo máximo","50000"],
+
+  ["auto1","🤖 Dedinho Automático","+1 clique/s","100000"],
+  ["auto2","⚙️ Robô da Colheita","+5 clique/s","1000000"],
+  ["auto3","🦾 Braço Mecânico","+25 clique/s","10000000"],
+  ["auto4","🚜 Colheitadeira","+100 clique/s","100000000"],
+  ["auto5","🌌 Fábrica Autônoma","+500 clique/s","1e10"],
+  ["auto6","♾️ Núcleo Automático","+2500 clique/s","1e12"]
+
+];
+
+function upgradeCost(u){
+
+  const id=u[0];
+  const base=Number(u[3]);
+  const lvl=s.up[id]||0;
+
+  return base*Math.pow(2.25,lvl);
 
 }
 
 function buy(id){
 
-const u=
-ups.find(x=>x[0]===id);
+  const u=ups.find(x=>x[0]===id);
 
-const c=price(u);
+  if(!u)return;
 
-if(s.potatoes<c)return;
+  const cost=upgradeCost(u);
 
-s.potatoes-=c;
+  if(s.potatoes<cost){
 
-s.up[id]=
-(s.up[id]||0)+1;
+    toast(
+      "🥔 Faltam batatas",
+      "Precisa de "+fmt(cost)
+    );
 
-if([
-"tap",
-"iron",
-"mega",
-"ultra",
-"nuke",
-"divine"
-].includes(id)){
+    return;
 
-s.power+=u[3];
+  }
 
-}
+  s.potatoes-=cost;
 
-toast(
-"🛒 Upgrade comprado!",
-u[1]
-);
+  s.up[id]=(s.up[id]||0)+1;
 
-render();
+  if(id==="tap")s.power+=2;
+  if(id==="iron")s.power+=10;
+  if(id==="mega")s.power+=50;
+  if(id==="ultra")s.power+=250;
+  if(id==="nuke")s.power+=1500;
+  if(id==="divine")s.power+=10000;
+
+  if(id==="cosmic")s.power+=1e6;
+  if(id==="galactic")s.power+=1e8;
+  if(id==="quantum")s.power+=1e10;
+  if(id==="multi")s.power+=1e12;
+  if(id==="infinite")s.power+=1e14;
+  if(id==="void")s.power+=1e16;
+  if(id==="supreme")s.power+=1e18;
+
+  if(id==="crit")
+    s.critChance+=2;
+
+  if(id==="critD")
+    s.critMulti+=.5;
+
+  save();
+  render();
 
 }
 
 function renderShop(){
 
-const b=$("shopList");
+  const box=$("shopList");
 
-if(!b)return;
+  box.innerHTML="";
 
-b.innerHTML="";
+  ups.forEach(u=>{
 
-ups.forEach(u=>{
+    const cost=upgradeCost(u);
+    const lvl=s.up[u[0]]||0;
 
-const c=price(u);
+    const d=document.createElement("div");
 
-const d=document.createElement("div");
+    d.className="card";
 
-d.className="card";
+    d.innerHTML=`
 
-d.innerHTML=
-"<b>"+u[1]+"</b>"+
-"<div class='small'>"+
-u[2]+
-" • Nível "+
-(s.up[u[0]]||0)+
-"</div>";
+      <div class="row">
 
-const bt=
-document.createElement("button");
+        <div>
+          <b>${u[1]}</b>
 
-bt.className="buy";
+          <div class="small">
+            ${u[2]}
+            • Nível ${lvl}
+          </div>
+        </div>
 
-bt.textContent=
-"🥔 "+fmt(c);
+        <button
+          class="buy"
+          ${s.potatoes<cost?"disabled":""}
+          onclick="buy('${u[0]}')"
+        >
+          🥔 ${fmt(cost)}
+        </button>
 
-bt.disabled=
-s.potatoes<c;
+      </div>
+    `;
 
-bt.onclick=
-()=>buy(u[0]);
+    box.appendChild(d);
 
-d.appendChild(bt);
+  });
 
-b.appendChild(d);
+  $("autoRate").textContent=fmt(autoRate());
 
-});
+}
+
+/* PASSIVAS */
+
+const passiveData=[
+
+  ["focus","🧠 Foco do Fazendeiro","+4% poder geral"],
+  ["luck","🍀 Sorte da Colheita","+4% bônus"],
+  ["combo","🔥 Instinto do Combo","+4% combo"],
+  ["coin","🪙 Comerciante Nato","+10% moedas"],
+  ["game","🎮 Mestre dos Jogos","+4% recompensas"],
+  ["farm","🌾 Espírito da Fazenda","+4% Fazenda"],
+  ["ancient","🏺 Sabedoria Antiga","+4% poder"],
+  ["void","🕳️ Núcleo do Vazio","+4% poder"]
+
+];
+
+function passiveCost(lvl){
+
+  return 10000*Math.pow(4,lvl);
+
+}
+
+function buyPassive(id){
+
+  const p=passiveData.find(x=>x[0]===id);
+
+  if(!p)return;
+
+  const lvl=s.passive[id]||0;
+  const cost=passiveCost(lvl);
+
+  if(s.potatoes<cost){
+
+    toast(
+      "🔮 Passiva bloqueada",
+      "Precisa de "+fmt(cost)
+    );
+
+    return;
+
+  }
+
+  s.potatoes-=cost;
+  s.passive[id]=lvl+1;
+
+  save();
+  render();
+
+}
+
+function renderPassives(){
+
+  const box=$("passiveList");
+
+  box.innerHTML="";
+
+  passiveData.forEach(p=>{
+
+    const lvl=s.passive[p[0]]||0;
+    const cost=passiveCost(lvl);
+
+    const d=document.createElement("div");
+
+    d.className="card";
+
+    d.innerHTML=`
+
+      <div class="row">
+
+        <div>
+          <b>${p[1]}</b>
+
+          <div class="small">
+            ${p[2]}
+            • Nível ${lvl}
+          </div>
+        </div>
+
+        <button
+          class="buy"
+          ${s.potatoes<cost?"disabled":""}
+          onclick="buyPassive('${p[0]}')"
+        >
+          ${fmt(cost)}
+        </button>
+
+      </div>
+    `;
+
+    box.appendChild(d);
+
+  });
+
+}
+
+/* SKINS */
+
+const skinData={
+
+  classic:["🥔 Clássica",0],
+  gold:["👑 Dourada",100000],
+  diamond:["💎 Diamante",10000000],
+  lava:["🌋 Lava",1000000000],
+  galaxy:["🌌 Galáxia",1e12],
+  cosmic:["✨ Cósmica",1e14],
+  robot:["🤖 Robô",1e15],
+  rainbow:["🌈 Arco-Íris",1e16],
+  void:["🕳️ Vazio",1e18],
+  neon:["💚 Neon",1e20],
+  omega:["🔱 Ômega",1e22],
+  quantum:["⚛️ Quântica",1e24],
+  celestial:["☀️ Celestial",1e26],
+  ancient:["🏺 Ancestral",1e28],
+  dimension:["🌀 Dimensional",1e30],
+  reality:["🌌 Realidade",1e32],
+  infinity:["♾️ Infinita",1e35],
+  glitch:["👾 Glitch",1e38],
+  darkmatter:["🌑 Matéria Escura",1e42],
+  multiverse:["🌠 Multiverso",1e45]
+
+};
+
+function selectSkin(id){
+
+  if(!s.skins.includes(id)){
+
+    const price=skinData[id][1];
+
+    if(s.potatoes<price){
+
+      toast(
+        "🔒 Skin bloqueada",
+        "Precisa de "+fmt(price)
+      );
+
+      return;
+
+    }
+
+    s.potatoes-=price;
+    s.skins.push(id);
+
+  }
+
+  s.skin=id;
+
+  applySkin();
+
+  save();
+  render();
+
+}
+
+function applySkin(){
+
+  const b=$("potato");
+
+  b.className="potato skin-"+s.skin;
 
 }
 
 function renderSkins(){
 
-const b=$("skinList");
+  const box=$("skinList");
 
-if(!b)return;
+  box.innerHTML="";
 
-b.innerHTML="";
+  Object.entries(skinData).forEach(([id,d])=>{
 
-Object.entries(skinData)
-.forEach(([id,v])=>{
+    const unlocked=s.skins.includes(id);
 
-const bt=
-document.createElement("button");
+    const el=document.createElement("div");
 
-bt.className=
-"skin "+
-(s.skin===id?"selected":"");
+    el.className=
+      "skin "+(s.skin===id?"selected":"");
 
-bt.innerHTML=
-"<div class='preview "+v[2]+"'></div>"+
-"<b>"+v[0]+"</b><br>"+
-"<span class='small'>"+
-(v[1]?"🥔 "+fmt(v[1]):"Grátis")+
-"</span>";
+    el.innerHTML=`
 
-bt.onclick=
-()=>skinBuy(id);
+      <div class="preview ${id}">
+      </div>
 
-b.appendChild(bt);
+      <b>${d[0]}</b>
 
-});
+      <div class="small">
+        ${
+          unlocked
+          ? "Desbloqueada"
+          : "🥔 "+fmt(d[1])
+        }
+      </div>
 
-}
+      <button
+        class="buy"
+        onclick="selectSkin('${id}')"
+      >
+        ${s.skin===id?"Usando":"Selecionar"}
+      </button>
+    `;
 
-function skinBuy(id){
+    box.appendChild(el);
 
-const v=skinData[id];
-
-if(!s.skins.includes(id)){
-
-if(s.potatoes<v[1])return;
-
-s.potatoes-=v[1];
-
-s.skins.push(id);
+  });
 
 }
 
-s.skin=id;
+/* FAZENDA */
 
-toast(
-"🎨 Skin equipada!",
-v[0]
-);
+const farms=[
 
-render();
+  ["field","🌱 Campo",1000,"+10%"],
+  ["tractor","🚜 Trator",100000,"+25%"],
+  ["green","🌿 Estufa",10000000,"+50%"],
+  ["factory","🏭 Fábrica",1e9,"+80%"],
+  ["market","🏪 Mercado",1e12,"+120%"],
+  ["castle","🏰 Império",1e15,"+200%"]
+
+];
+
+function buyFarm(id){
+
+  const f=farms.find(x=>x[0]===id);
+
+  if(!f)return;
+
+  if(s.farm[id])return;
+
+  if(s.potatoes<f[2]){
+
+    toast(
+      "🌾 Fazenda bloqueada",
+      "Precisa de "+fmt(f[2])
+    );
+
+    return;
+
+  }
+
+  s.potatoes-=f[2];
+  s.farm[id]=true;
+
+  updateBackground();
+
+  save();
+  render();
 
 }
 
-function renderAch(){
+function updateBackground(){
 
-const b=$("achList");
+  document.body.className="";
 
-if(!b)return;
+  if(s.farm.castle)
+    document.body.classList.add("farm-castle");
 
-b.innerHTML="";
+  else if(s.farm.market)
+    document.body.classList.add("farm-market");
 
-achs.forEach(a=>{
+  else if(s.farm.factory)
+    document.body.classList.add("farm-factory");
 
-const done=
-s.ach[a[0]]||
-a[3]();
+  else if(s.farm.green)
+    document.body.classList.add("farm-green");
 
-if(done&&!s.ach[a[0]]){
+  else if(s.farm.tractor)
+    document.body.classList.add("farm-tractor");
 
-s.ach[a[0]]=true;
-
-toast(
-"🏆 Conquista!",
-a[1]
-);
-
-}
-
-const d=
-document.createElement("div");
-
-d.className="card";
-
-d.style.opacity=
-done?1:.4;
-
-d.innerHTML=
-(done?"✅ ":"🔒 ")+
-a[1]+
-"<div class='small'>"+
-a[2]+
-"</div>";
-
-b.appendChild(d);
-
-});
+  else if(s.farm.field)
+    document.body.classList.add("farm-field");
 
 }
 
 function renderFarm(){
 
-const b=$("farmList");
+  const box=$("farmList");
 
-if(!b)return;
+  box.innerHTML="";
 
-b.innerHTML="";
+  farms.forEach(f=>{
 
-farms.forEach(f=>{
+    const unlocked=!!s.farm[f[0]];
 
-const lv=
-s.farm[f[0]]||0;
+    const d=document.createElement("div");
 
-const d=
-document.createElement("div");
+    d.className="card";
 
-d.className="card";
+    d.innerHTML=`
 
-d.innerHTML=
-"<b>"+f[1]+"</b>"+
-"<div class='small'>"+
-"Custo: "+fmt(f[2])+
-" • "+
-(lv?"Desbloqueado":"Bloqueado")+
-"</div>";
+      <div class="row">
 
-const bt=
-document.createElement("button");
+        <div>
+          <b>${f[1]}</b>
 
-bt.className="buy";
+          <div class="small">
+            Bônus: ${f[3]}
+          </div>
+        </div>
 
-bt.textContent=
-lv?"✓ Desbloqueado":"Desbloquear";
+        <button
+          class="buy"
+          ${unlocked?"disabled":""}
+          onclick="buyFarm('${f[0]}')"
+        >
+          ${unlocked?"Desbloqueado":"🥔 "+fmt(f[2])}
+        </button>
 
-bt.disabled=
-!!lv||
-s.potatoes<f[2];
+      </div>
 
-bt.onclick=()=>{
+    `;
 
-s.potatoes-=f[2];
+    box.appendChild(d);
 
-s.farm[f[0]]=1;
+  });
 
-toast(
-"🌾 Fazenda!",
-f[1]+" desbloqueado"
+}
+
+/* LORE */
+
+const loreChapters=[
+
+  [
+    0,
+    "🥔 O Começo",
+    "Uma pequena batata apareceu no meio de uma plantação esquecida. Ela não sabia de onde veio… mas parecia estar esperando alguém."
+  ],
+
+  [
+    100,
+    "🌱 O Despertar",
+    "Depois de tantos cliques, a Batata sentiu uma energia estranha. Ela não era uma batata comum."
+  ],
+
+  [
+    10000,
+    "🚜 A Fazenda",
+    "A primeira fazenda revelou marcas de uma civilização antiga. Talvez aquelas terras escondam a origem da Batata."
+  ],
+
+  [
+    1000000,
+    "🌿 O Segredo",
+    "Símbolos brilhantes começaram a aparecer entre as plantações. Quando a Batata era clicada, os símbolos brilhavam ainda mais."
+  ],
+
+  [
+    100000000,
+    "🏭 A Grande Descoberta",
+    "As máquinas antigas falavam sobre uma Batata Suprema capaz de atravessar mundos."
+  ],
+
+  [
+    1e12,
+    "🌌 O Céu",
+    "Um portal apareceu no céu. A Batata percebeu que sua energia não vinha da Terra."
+  ],
+
+  [
+    1e14,
+    "🪐 O Outro Mundo",
+    "Além do portal existia uma fazenda impossível, flutuando no espaço."
+  ],
+
+  [
+    1e15,
+    "♾️ O Infinito",
+    "Cada clique despertava uma parte de um poder antigo."
+  ],
+
+  [
+    1e18,
+    "🔮 A Verdade",
+    "Os antigos fazendeiros não criaram a Batata. Eles apenas tentaram impedir que ela despertasse."
+  ],
+
+  [
+    1e21,
+    "🌠 O Último Campo",
+    "Você chegou onde nenhuma colheita deveria chegar. A Batata olha para você como se sempre soubesse que este momento aconteceria."
+  ]
+
+];
+
+function renderLore(){
+
+  const box=$("loreText");
+
+  box.innerHTML="";
+
+  loreChapters.forEach((c,i)=>{
+
+    if(s.potatoes>=c[0]){
+
+      const d=document.createElement("div");
+
+      d.className="card";
+
+      d.innerHTML=`
+
+        <h3>${c[1]}</h3>
+
+        <p>${c[2]}</p>
+
+        <span class="small">
+          Capítulo ${i+1} desbloqueado
+        </span>
+
+      `;
+
+      box.appendChild(d);
+
+    }
+
+  });
+
+}
+
+/* CLIQUE */
+
+let comboTimer=null;
+
+$("potato").addEventListener(
+  "pointerdown",
+  clickPotato
 );
 
-render();
+function clickPotato(e){
 
-};
+  e.preventDefault();
 
-d.appendChild(bt);
+  s.clicks++;
 
-b.appendChild(d);
+  s.combo=Math.min(
+    20,
+    s.combo+0.15
+  );
 
-});
+  s.bestCombo=Math.max(
+    s.bestCombo,
+    Math.floor(s.combo)
+  );
+
+  clearTimeout(comboTimer);
+
+  comboTimer=setTimeout(()=>{
+
+    s.combo=1;
+    render();
+
+  },1800);
+
+  let amount=s.power;
+
+  amount*=Math.max(1,s.combo);
+
+  amount*=gameMulti();
+
+  let critical=
+    Math.random()*100<s.critChance;
+
+  if(critical){
+
+    amount*=s.critMulti;
+    s.crits++;
+
+  }
+
+  amount=Math.floor(amount);
+
+  s.potatoes+=amount;
+
+  const xpGain=Math.max(
+    1,
+    Math.floor(Math.sqrt(amount))
+  );
+
+  s.xp+=xpGain;
+
+  while(s.xp>=xpNeed()){
+
+    s.xp-=xpNeed();
+    s.level++;
+
+    toast(
+      "⭐ Nível aumentado!",
+      "Você chegou ao nível "+s.level
+    );
+
+  }
+
+  floatText(
+    "+"+fmt(amount)+(critical?" 💥":""),
+    e.clientX,
+    e.clientY
+  );
+
+  particles(
+    e.clientX,
+    e.clientY
+  );
+
+  $("potato").classList.remove("hit");
+
+  void $("potato").offsetWidth;
+
+  $("potato").classList.add("hit");
+
+  checkAch();
+
+  save();
+  render();
 
 }
 
-function renderStats(){
+/* AUTOMÁTICO */
 
-$("statsText").innerHTML=
-"<div class='card'>"+
-"🥔 Batatas: <b>"+fmt(s.potatoes)+"</b><br>"+
-"👆 Cliques: <b>"+fmt(s.clicks)+"</b><br>"+
-"💥 Críticos: <b>"+fmt(s.crits)+"</b><br>"+
-"🔥 Melhor combo: <b>"+s.bestCombo+"</b><br>"+
-"🎮 Vitórias: <b>"+s.games+"</b><br>"+
-"⭐ Prestígios: <b>"+s.prestige+"</b><br>"+
-"🎨 Skins: <b>"+s.skins.length+"</b>"+
-"</div>";
+setInterval(()=>{
+
+  const rate=autoRate();
+
+  if(rate<=0)return;
+
+  const amount=
+    Math.floor(
+      rate*
+      s.power*
+      gameMulti()
+    );
+
+  s.potatoes+=amount;
+
+  s.xp+=Math.max(
+    1,
+    Math.floor(Math.sqrt(amount))
+  );
+
+  while(s.xp>=xpNeed()){
+
+    s.xp-=xpNeed();
+    s.level++;
+
+  }
+
+  save();
+  render();
+
+},1000);
+
+/* EFEITOS */
+
+function floatText(text,x,y){
+
+  const d=document.createElement("div");
+
+  d.className="float";
+
+  d.textContent=text;
+
+  d.style.left=x+"px";
+  d.style.top=y+"px";
+
+  document.body.appendChild(d);
+
+  setTimeout(
+    ()=>d.remove(),
+    800
+  );
 
 }
+
+function particles(x,y){
+
+  for(let i=0;i<8;i++){
+
+    const d=document.createElement("div");
+
+    d.className="particle";
+
+    d.style.left=x+"px";
+    d.style.top=y+"px";
+
+    d.style.setProperty(
+      "--x",
+      (Math.random()*160-80)+"px"
+    );
+
+    d.style.setProperty(
+      "--y",
+      (Math.random()*160-100)+"px"
+    );
+
+    document.body.appendChild(d);
+
+    setTimeout(
+      ()=>d.remove(),
+      700
+    );
+
+  }
+
+}
+
+/* CONQUISTAS */
+
+const achs=[
+
+  ["first","🥔 Primeira Batata","Clique pela primeira vez",()=>s.clicks>=1],
+
+  ["100","🌱 Fazendeiro","100 batatas",()=>s.potatoes>=100],
+
+  ["1k","👑 Rei","1K batatas",()=>s.potatoes>=1000],
+
+  ["1m","💰 Milionário","1M batatas",()=>s.potatoes>=1e6],
+
+  ["1b","🔥 Bilionário","1B batatas",()=>s.potatoes>=1e9],
+
+  ["1t","🌌 Trilionário","1T batatas",()=>s.potatoes>=1e12],
+
+  ["100t","🌠 100T","100T batatas",()=>s.potatoes>=1e14],
+
+  ["qa","🪐 Quadrilionário","1Qa batatas",()=>s.potatoes>=1e15],
+
+  ["qi","♾️ Quinquilionário","1Qi batatas",()=>s.potatoes>=1e18],
+
+  ["clicks","👆 Dedo de Aço","10K cliques",()=>s.clicks>=10000],
+
+  ["combo","🔥 Combo Insano","Combo 10+",()=>s.bestCombo>=10],
+
+  ["games","🎮 Gamer","10 minigames",()=>s.games>=10],
+
+  ["prestige","⭐ Renascimento","Primeiro prestígio",()=>s.prestige>=1]
+
+];
 
 function checkAch(){
 
-achs.forEach(a=>{
+  achs.forEach(a=>{
 
-if(
-!s.ach[a[0]]&&
-a[3]()
-){
+    if(!s.ach[a[0]]&&a[3]()){
 
-s.ach[a[0]]=true;
+      s.ach[a[0]]=true;
 
-toast(
-"🏆 "+a[1],
-a[2]
-);
+      toast(
+        "🏆 "+a[1],
+        a[2]
+      );
 
-}
+    }
 
-});
+  });
 
 }
 
-function openM(id){
+function renderAchievements(){
 
-$(id).classList.add("open");
+  const box=$("achList");
 
-render();
+  box.innerHTML="";
 
-}
+  achs.forEach(a=>{
 
-function closeM(id){
+    const done=!!s.ach[a[0]];
 
-$(id).classList.remove("open");
+    const d=document.createElement("div");
 
-}
+    d.className="card";
 
-document.querySelectorAll(".modal")
-.forEach(m=>
-m.addEventListener(
-"pointerdown",
-e=>{
-if(e.target===m)
-m.classList.remove("open");
-}
-)
-);
+    d.innerHTML=`
 
-function toast(t,d){
+      <b>
+        ${done?"🏆":"🔒"} ${a[1]}
+      </b>
 
-$("toastT").textContent=t;
+      <div class="small">
+        ${a[2]}
+      </div>
 
-$("toastD").textContent=d;
+    `;
 
-$("toast").classList.add("show");
+    box.appendChild(d);
 
-clearTimeout(window.tt);
-
-window.tt=setTimeout(
-()=>$("toast").classList.remove("show"),
-2800
-);
+  });
 
 }
 
-function toggleSound(){
+/* MINIGAME RELÂMPAGO */
 
-s.sound=!s.sound;
-
-render();
-
-}
-
-/* =========================
-   MENU ADMIN SECRETO
-========================= */
-
-function secretAdmin(){
-
-const code=
-prompt("🔐 Digite o código secreto:");
-
-if(code!=="48"){
-
-toast(
-"🔒 Acesso negado",
-"Código incorreto."
-);
-
-return;
-
-}
-
-s.admin=true;
-
-save();
-
-closeM("settings");
-
-openM("admin");
-
-toast(
-"🛠️ ADMIN liberado!",
-"Menu OP desbloqueado."
-);
-
-}
-
-function opGive(n){
-
-s.potatoes+=n;
-
-toast(
-"🛠️ OP",
-"+"+fmt(n)+" batatas adicionadas."
-);
-
-render();
-
-}
-
-function opPower(){
-
-s.power=1e15;
-
-toast(
-"💥 OP",
-"Poder de clique definido para 1Qa."
-);
-
-render();
-
-}
-
-function opCoins(){
-
-s.coins+=1e6;
-
-toast(
-"🪙 OP",
-"+1M moedas."
-);
-
-render();
-
-}
-
-function opSkins(){
-
-s.skins=[
-"classic",
-"gold",
-"diamond",
-"lava",
-"galaxy",
-"cosmic",
-"robot",
-"rainbow"
-];
-
-toast(
-"🎨 OP",
-"Todas as skins liberadas."
-);
-
-render();
-
-}
-
-function opAch(){
-
-achs.forEach(
-a=>s.ach[a[0]]=true
-);
-
-toast(
-"🏆 OP",
-"Todas as conquistas concluídas."
-);
-
-render();
-
-}
-
-function opPrestige(){
-
-s.prestige+=10;
-
-toast(
-"⭐ OP",
-"+10 prestígios."
-);
-
-render();
-
-}
-
-function toggleAdmin(){
-
-if(s.admin)
-openM("admin");
-else
-secretAdmin();
-
-}
-
-function resetGame(){
-
-if(
-confirm(
-"Apagar todo o progresso?"
-)
-){
-
-localStorage.removeItem(KEY);
-
-location.reload();
-
-}
-
-}
-
-/* =========================
-   CLIQUE RELÂMPAGO
-========================= */
-
-let qr=false;
-let qt=10;
-let qs=0;
-let qid;
+let quickRunning=false;
+let quickTime=10;
+let quickHits=0;
+let quickId=null;
 
 function startQuick(){
 
-if(qr)return;
+  if(quickRunning)return;
 
-qr=true;
-qt=10;
-qs=0;
+  quickRunning=true;
+  quickTime=10;
+  quickHits=0;
 
-$("target").style.display="block";
+  $("target").style.display="block";
 
-move();
+  moveTarget();
 
-qid=setInterval(()=>{
+  quickId=setInterval(()=>{
 
-qt-=.1;
+    quickTime-=.1;
 
-$("quickInfo").textContent=
-"⏱️ "+qt.toFixed(1)+
-"s • Acertos: "+qs;
+    $("quickInfo").textContent=
+      "⏱️ "+quickTime.toFixed(1)+
+      "s • Acertos: "+quickHits;
 
-if(qt<=0)
-endQuick();
+    if(quickTime<=0)
+      endQuick();
 
-},100);
+  },100);
 
 }
 
 $("target").addEventListener(
-"pointerdown",
-e=>{
+  "pointerdown",
+  e=>{
 
-e.preventDefault();
+    e.preventDefault();
 
-if(!qr)return;
+    if(!quickRunning)return;
 
-qs++;
+    quickHits++;
 
-s.coins+=5+qs;
+    moveTarget();
 
-move();
-
-render();
-
-}
+  }
 );
 
-function move(){
+function moveTarget(){
 
-const z=$("quickZone");
-const t=$("target");
+  const zone=$("quickZone");
+  const target=$("target");
 
-const sz=
-Math.max(30,54-qs);
+  const size=
+    Math.max(
+      30,
+      54-quickHits
+    );
 
-t.style.width=
-sz+"px";
+  target.style.width=size+"px";
+  target.style.height=size+"px";
 
-t.style.height=
-sz+"px";
+  target.style.left=
+    Math.random()*
+    Math.max(
+      1,
+      zone.clientWidth-size
+    )+"px";
 
-t.style.left=
-Math.random()*
-Math.max(1,z.clientWidth-sz)
-+"px";
-
-t.style.top=
-Math.random()*
-Math.max(1,z.clientHeight-sz)
-+"px";
+  target.style.top=
+    30+
+    Math.random()*
+    Math.max(
+      1,
+      zone.clientHeight-size-30
+    )+"px";
 
 }
 
 function endQuick(){
 
-clearInterval(qid);
+  clearInterval(quickId);
 
-qr=false;
+  quickRunning=false;
 
-$("target").style.display="none";
+  $("target").style.display="none";
 
-const r=
-Math.max(
-100,
-qs*s.power*3
-);
+  const reward=Math.max(
+    100,
+    Math.floor(
+      quickHits*
+      s.power*
+      3*
+      gameMulti()
+    )
+  );
 
-s.potatoes+=r;
+  s.potatoes+=reward;
+  s.games++;
 
-s.games++;
+  toast(
+    "⚡ Resultado!",
+    "+"+fmt(reward)+" batatas"
+  );
 
-toast(
-"⚡ Resultado!",
-"+"+fmt(r)+" batatas"
-);
-
-render();
+  save();
+  render();
 
 }
 
-/* =========================
-   PRECISÃO
-========================= */
+/* PRECISÃO */
 
 function precision(){
 
-const e=
-document.createElement("div");
+  const e=document.createElement("div");
 
-e.className="event show";
+  e.className="event show";
 
-e.innerHTML=
-"<div class='eventBox'>"+
-"<h2>🎯 PRECISÃO</h2>"+
-"<p>Clique no centro.</p>"+
-"<button id='prec' style='width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,#fff 0 8%,#e22 9% 25%,#fff 26% 45%,#e22 46%)'>🎯</button>"+
-"</div>";
+  e.innerHTML=`
 
-document.body.appendChild(e);
+    <div class="eventBox">
 
-$("prec").onpointerdown=x=>{
+      <h2>🎯 PRECISÃO</h2>
 
-const r=
-$("prec").getBoundingClientRect();
+      <p>Clique no centro do alvo.</p>
 
-const dist=
-Math.hypot(
-x.clientX-(r.left+r.width/2),
-x.clientY-(r.top+r.height/2)
-);
+      <button
+        id="prec"
+        style="
+          width:150px;
+          height:150px;
+          border-radius:50%;
+          background:
+          radial-gradient(
+            circle,
+            #fff 0 8%,
+            #e22 9% 25%,
+            #fff 26% 45%,
+            #e22 46%
+          );
+        "
+      >
+        🎯
+      </button>
 
-const reward=
-Math.floor(
-(
-dist<20
-?200
-:dist<45
-?80
-:20
-)*s.power
-);
+    </div>
 
-s.potatoes+=reward;
+  `;
 
-s.games++;
+  document.body.appendChild(e);
 
-e.remove();
+  $("prec").onpointerdown=x=>{
 
-toast(
-"🎯 Precisão!",
-"+"+fmt(reward)
-);
+    const r=
+      $("prec").getBoundingClientRect();
 
-render();
+    const dist=Math.hypot(
 
-};
+      x.clientX-
+      (r.left+r.width/2),
+
+      x.clientY-
+      (r.top+r.height/2)
+
+    );
+
+    let base;
+
+    if(dist<20)
+      base=500;
+
+    else if(dist<45)
+      base=200;
+
+    else
+      base=50;
+
+    const reward=Math.floor(
+      base*
+      s.power*
+      gameMulti()
+    );
+
+    s.potatoes+=reward;
+    s.games++;
+
+    e.remove();
+
+    toast(
+      "🎯 Precisão!",
+      "+"+fmt(reward)+" batatas"
+    );
+
+    save();
+    render();
+
+  };
 
 }
 
-/* =========================
-   MEMÓRIA
-========================= */
+/* MEMÓRIA */
 
 let seq=[];
-let pos=0;
+let memoryPos=0;
+let memoryLocked=false;
+let memoryToken=0;
 
 function memoryStart(){
 
-seq=
-Array.from(
-{
-length:
-4+Math.min(6,s.level)
-},
-()=>Math.floor(Math.random()*4)
-);
+  memoryToken++;
 
-pos=0;
+  const token=memoryToken;
 
-$("memory").innerHTML=
-"<p>Observe...</p>";
+  memoryLocked=true;
 
-seq.forEach(
-(n,i)=>
-setTimeout(
-()=>
-$("memory").innerHTML=
-"<h2>"+
-["🥔","🌽","🍅","🥕"][n]+
-"</h2>",
-i*500
-)
-);
+  const len=Math.min(
+    10,
+    3+Math.floor(s.level/2)
+  );
 
-setTimeout(
-memoryInput,
-seq.length*500+500
-);
+  seq=Array.from(
+    {length:len},
+    ()=>Math.floor(Math.random()*4)
+  );
 
-}
+  memoryPos=0;
 
-function memoryInput(){
+  const icons=[
+    "🥔",
+    "🌽",
+    "🍅",
+    "🥕"
+  ];
 
-$("memory").innerHTML="";
+  $("memory").innerHTML=
+    "<p>👀 Memorize a sequência!</p>";
 
-[
-"🥔",
-"🌽",
-"🍅",
-"🥕"
-].forEach((x,i)=>{
+  seq.forEach((n,i)=>{
 
-const b=
-document.createElement("button");
+    setTimeout(()=>{
 
-b.textContent=x;
+      if(token!==memoryToken)return;
 
-b.onclick=()=>{
+      $("memory").innerHTML=`
 
-if(i!==seq[pos]){
+        <div style="font-size:64px">
+          ${icons[n]}
+        </div>
 
-$("memory").innerHTML=
-"❌ Errou!";
+        <p>
+          ${i+1}/${seq.length}
+        </p>
 
-return;
+      `;
 
-}
+    },i*700);
 
-pos++;
+  });
 
-if(pos===seq.length){
+  setTimeout(()=>{
 
-const r=
-300*s.power;
+    if(token===memoryToken)
+      memoryInput(token);
 
-s.potatoes+=r;
-
-s.games++;
-
-toast(
-"🧠 Memória perfeita!",
-"+"+fmt(r)
-);
-
-$("memory").innerHTML="✅";
-
-render();
-
-}else{
-
-b.style.opacity=.4;
+  },seq.length*700+400);
 
 }
 
-};
+function memoryInput(token){
 
-$("memory").appendChild(b);
+  if(token!==memoryToken)return;
 
-});
+  memoryLocked=false;
+
+  $("memory").innerHTML=
+    "<p>Agora repita:</p>";
+
+  const icons=[
+    "🥔",
+    "🌽",
+    "🍅",
+    "🥕"
+  ];
+
+  icons.forEach((icon,i)=>{
+
+    const b=document.createElement("button");
+
+    b.className="memory";
+
+    b.textContent=icon;
+
+    b.onpointerdown=e=>{
+
+      e.preventDefault();
+
+      if(memoryLocked)return;
+
+      if(i!==seq[memoryPos]){
+
+        memoryLocked=true;
+
+        toast(
+          "🧠 Memória falhou!",
+          "Sequência errada."
+        );
+
+        $("memory").innerHTML=
+          "❌ Errou! Tente novamente.";
+
+        return;
+
+      }
+
+      memoryPos++;
+
+      b.style.opacity=".45";
+
+      if(memoryPos===seq.length){
+
+        memoryLocked=true;
+
+        const reward=Math.floor(
+
+          (500+seq.length*250)
+          *s.power
+          *gameMulti()
+
+        );
+
+        s.potatoes+=reward;
+        s.games++;
+
+        $("memory").innerHTML=
+          "✅ Sequência completa!";
+
+        toast(
+          "🧠 Memória perfeita!",
+          "+"+fmt(reward)
+        );
+
+        save();
+        render();
+
+      }
+
+    };
+
+    $("memory").appendChild(b);
+
+  });
 
 }
 
-/* =========================
-   BATATA CERTA
-========================= */
+/* BATATA CERTA */
 
 function rightPotato(){
 
-const b=$("rightGame");
+  const box=$("rightGame");
 
-b.innerHTML="";
+  box.innerHTML=`
 
-const good=
-Math.floor(Math.random()*6);
+    <p>
+      🥔 Encontre a verdadeira!
+      Você tem 3 tentativas.
+    </p>
 
-for(let i=0;i<6;i++){
+  `;
 
-const x=
-document.createElement("button");
+  const good=
+    Math.floor(Math.random()*6);
 
-x.className="memory";
+  let attempts=0;
+  let done=false;
 
-x.textContent="🥔";
+  for(let i=0;i<6;i++){
 
-x.onclick=()=>{
+    const b=document.createElement("button");
 
-if(i===good){
+    b.className="memory";
 
-const r=
-500*s.power;
+    b.textContent="🥔";
 
-s.potatoes+=r;
+    b.onpointerdown=e=>{
 
-s.games++;
+      e.preventDefault();
 
-toast(
-"🥔 Acertou!",
-"+"+fmt(r)
-);
+      if(done)return;
 
-}else{
+      attempts++;
 
-toast(
-"❌ Falsa!",
-"Essa não era a verdadeira."
-);
+      if(i===good){
+
+        done=true;
+
+        const reward=Math.floor(
+
+          (700+attempts*100)
+          *s.power
+          *gameMulti()
+
+        );
+
+        s.potatoes+=reward;
+        s.games++;
+
+        box.innerHTML=
+          "✅ Encontrou a verdadeira!";
+
+        toast(
+          "🥔 A verdadeira!",
+          "+"+fmt(reward)
+        );
+
+        save();
+        render();
+
+      }
+
+      else if(attempts>=3){
+
+        done=true;
+
+        box.innerHTML=
+          "❌ A batata verdadeira escapou!";
+
+        toast(
+          "❌ Fim de jogo!",
+          "Tente novamente."
+        );
+
+      }
+
+      else{
+
+        b.textContent="❌";
+        b.disabled=true;
+
+        toast(
+          "❌ Falsa!",
+          (3-attempts)+
+          " tentativa(s) restante(s)"
+        );
+
+      }
+
+    };
+
+    box.appendChild(b);
+
+  }
 
 }
 
-b.innerHTML="";
+/* PRESTÍGIO */
 
-render();
+function renderPrestige(){
 
-};
+  const req=
+    1e7*
+    Math.pow(
+      4,
+      s.prestige
+    );
 
-b.appendChild(x);
+  $("prestText").innerHTML=`
+
+    <div class="card">
+
+      <b>⭐ Prestígios: ${s.prestige}</b>
+
+      <p>
+        Multiplicador:
+        <strong>
+          x${prestigeMulti().toFixed(2)}
+        </strong>
+      </p>
+
+      <p>
+        Próximo requisito:
+        <strong>${fmt(req)}</strong>
+        batatas
+      </p>
+
+      <button
+        class="action"
+        onclick="prestige()"
+      >
+        ⭐ Fazer Prestígio
+      </button>
+
+    </div>
+
+  `;
 
 }
 
+function prestige(){
+
+  const req=
+    1e7*
+    Math.pow(
+      4,
+      s.prestige
+    );
+
+  if(s.potatoes<req){
+
+    toast(
+      "⭐ Ainda não!",
+      "Precisa de "+fmt(req)+" batatas"
+    );
+
+    return;
+
+  }
+
+  if(!confirm(
+    "Fazer prestígio? "+
+    "Seu progresso desta rodada será reiniciado."
+  ))return;
+
+  s.prestige++;
+
+  s.potatoes=0;
+  s.xp=0;
+  s.level=1;
+  s.power=1;
+  s.combo=1;
+
+  s.up={};
+  s.farm={};
+
+  toast(
+    "⭐ Prestígio!",
+    "Seu multiplicador permanente aumentou."
+  );
+
+  save();
+  render();
+
 }
 
-/* =========================
-   EVENTO BATATA DOURADA
-========================= */
+/* STATS */
+
+function renderStats(){
+
+  $("statsText").innerHTML=`
+
+    <div class="card">
+
+      🥔 Batatas:
+      <b>${fmt(s.potatoes)}</b>
+
+      <br><br>
+
+      👆 Cliques:
+      <b>${fmt(s.clicks)}</b>
+
+      <br><br>
+
+      💥 Críticos:
+      <b>${fmt(s.crits)}</b>
+
+      <br><br>
+
+      🔥 Melhor combo:
+      <b>${s.bestCombo}</b>
+
+      <br><br>
+
+      🎮 Vitórias:
+      <b>${s.games}</b>
+
+      <br><br>
+
+      ⭐ Prestígios:
+      <b>${s.prestige}</b>
+
+      <br><br>
+
+      🎨 Skins:
+      <b>${s.skins.length}</b>
+
+    </div>
+
+  `;
+
+}
+
+/* ADMIN */
+
+function secretAdmin(){
+
+  const code=
+    prompt("🔐 Digite o código secreto:");
+
+  if(code!=="48"){
+
+    toast(
+      "🔒 Acesso negado",
+      "Código incorreto."
+    );
+
+    return;
+
+  }
+
+  s.admin=true;
+
+  save();
+
+  closeM("settings");
+
+  openM("admin");
+
+  toast(
+    "🛠️ ADMIN liberado!",
+    "Menu OP desbloqueado."
+  );
+
+}
+
+function opGive(n){
+
+  s.potatoes+=n;
+
+  toast(
+    "🛠️ OP",
+    "+"+fmt(n)+" batatas."
+  );
+
+  save();
+  render();
+
+}
+
+function opPower(){
+
+  s.power=1e15;
+
+  toast(
+    "💥 OP",
+    "Poder definido para 1Qa."
+  );
+
+  save();
+  render();
+
+}
+
+function opCoins(){
+
+  s.coins+=1e6;
+
+  toast(
+    "🪙 OP",
+    "+1M moedas."
+  );
+
+  save();
+  render();
+
+}
+
+function opSkins(){
+
+  s.skins=
+    Object.keys(skinData);
+
+  toast(
+    "🎨 OP",
+    "Todas as skins liberadas."
+  );
+
+  save();
+  render();
+
+}
+
+function opAch(){
+
+  achs.forEach(
+    a=>s.ach[a[0]]=true
+  );
+
+  toast(
+    "🏆 OP",
+    "Todas as conquistas concluídas."
+  );
+
+  save();
+  render();
+
+}
+
+function opPrestige(){
+
+  s.prestige+=10;
+
+  toast(
+    "⭐ OP",
+    "+10 prestígios."
+  );
+
+  save();
+  render();
+
+}
+
+/* EVENTO */
 
 setInterval(()=>{
 
-if(
-!document.querySelector(".modal.open")&&
-Math.random()<.45
-){
+  if(
+    !document.querySelector(".modal.open") &&
+    Math.random()<.45
+  ){
 
-$("event").classList.add("show");
+    $("event").classList.add("show");
 
-clearTimeout(window.et);
+    clearTimeout(window.et);
 
-window.et=setTimeout(
-()=>$("event").classList.remove("show"),
-6500
-);
+    window.et=setTimeout(
+      ()=>$("event").classList.remove("show"),
+      6500
+    );
 
-}
+  }
 
 },35000);
 
 $("eventBtn").onclick=()=>{
 
-const r=
-Math.max(
-500,
-s.power*100
-);
+  const reward=Math.max(
+    500,
+    s.power*
+    100*
+    gameMulti()
+  );
 
-s.potatoes+=r;
+  s.potatoes+=reward;
 
-s.coins+=50;
+  s.coins+=50;
 
-s.games++;
+  s.games++;
 
-$("event").classList.remove("show");
+  $("event").classList.remove("show");
 
-toast(
-"✨ Batata Dourada!",
-"+"+fmt(r)+
-" batatas + 50 moedas"
-);
+  toast(
+    "✨ Batata Dourada!",
+    "+"+fmt(reward)+
+    " batatas + 50 moedas"
+  );
 
-render();
+  save();
+  render();
 
 };
 
-/* =========================
-   PRESTÍGIO
-========================= */
+/* MENU */
 
-function prestige(){
+function openM(id){
 
-const req=
-1e7*Math.pow(4,s.prestige);
+  $(id).classList.add("open");
 
-if(s.potatoes<req){
-
-toast(
-"⭐ Ainda não!",
-"Precisa de "+fmt(req)+" batatas"
-);
-
-return;
+  render();
 
 }
 
-if(
-!confirm(
-"Fazer prestígio? Seu progresso desta rodada será reiniciado."
-)
-)return;
+function closeM(id){
 
-s.prestige++;
-
-s.potatoes=0;
-s.xp=0;
-s.level=1;
-s.power=1;
-s.combo=1;
-s.up={};
-s.farm={};
-
-toast(
-"⭐ Prestígio!",
-"Multiplicador permanente aumentado."
-);
-
-render();
+  $(id).classList.remove("open");
 
 }
 
-$("soundBtn").onclick=toggleSound;
+document
+  .querySelectorAll(".modal")
+  .forEach(m=>{
+
+    m.addEventListener(
+      "pointerdown",
+      e=>{
+
+        if(e.target===m)
+          m.classList.remove("open");
+
+      }
+    );
+
+  });
+
+/* TOAST */
+
+function toast(t,d){
+
+  $("toastT").textContent=t;
+
+  $("toastD").textContent=d;
+
+  $("toast").classList.add("show");
+
+  clearTimeout(window.tt);
+
+  window.tt=setTimeout(
+    ()=>$("toast").classList.remove("show"),
+    2800
+  );
+
+}
+
+/* SOM */
+
+function toggleSound(){
+
+  s.sound=!s.sound;
+
+  $("soundBtn").textContent=
+    s.sound?"🔊":"🔇";
+
+  save();
+
+}
+
+/* RESET */
+
+function resetGame(){
+
+  if(
+    confirm(
+      "Apagar todo o progresso?"
+    )
+  ){
+
+    localStorage.removeItem(KEY);
+
+    location.reload();
+
+  }
+
+}
+
+/* RENDER */
+
+function render(){
+
+  $("pot").textContent=
+    fmt(s.potatoes);
+
+  $("big").textContent=
+    fmt(s.potatoes);
+
+  $("coins").textContent=
+    fmt(s.coins);
+
+  $("level").textContent=
+    s.level;
+
+  $("xp").textContent=
+    fmt(s.xp)+"/"+fmt(xpNeed());
+
+  $("power").textContent=
+    fmt(s.power);
+
+  $("crit").textContent=
+    s.critChance.toFixed(1);
+
+  $("combo").textContent=
+    s.combo.toFixed(1);
+
+  $("timer").textContent=
+    comboTimer?".":"0.0";
+
+  $("xpbar").style.width=
+    Math.min(
+      100,
+      s.xp/xpNeed()*100
+    )+"%";
+
+  renderShop();
+  renderPassives();
+  renderSkins();
+  renderAchievements();
+  renderFarm();
+  renderPrestige();
+  renderStats();
+  renderLore();
+
+  applySkin();
+  updateBackground();
+
+  $("soundBtn").textContent=
+    s.sound?"🔊":"🔇";
+
+}
+
+/* INICIALIZAÇÃO */
 
 render();
+
+setInterval(
+  save,
+  10000
+);
 
 </script>
 
